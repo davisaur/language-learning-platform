@@ -10,14 +10,30 @@
     <div class="container">
         <div class="left-container column">
             <h2>Left column</h2>
-            <button class="button" id="button1">Button 1</button>
-            <button class="button" id="button1">Button 2</button>
-            <button class="button" id="button1">Button 3</button>
+            <button class="button" id="button1" onclick="moveButton(this)">Button 1</button>
+            <button class="button" id="button2" onclick="moveButton(this)">Button 2</button>
+            <button class="button" id="button3" onclick="moveButton(this)">Button 3</button>
         </div>
         <div class="right-container column">
             <h2>Right column</h2>
 
         </div>
     </div>
-</body>
+
+    <script>
+        function moveButton(button) {
+            const rightContainer = document.querySelector('.right-container');
+            const leftContainer = document.querySelector('.left-container');
+
+            // Check if the button is already in the right container
+            if (button.parentElement === rightContainer) {
+                // Move it back to the left container
+                leftContainer.appendChild(button);
+            } else {
+                // Move it to the right container
+                rightContainer.appendChild(button);
+            }
+        }
+    </script>
+</body> 
 </html>
