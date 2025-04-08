@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching the Words</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-container column">
+
+        </div>
+        <div class="right-container column">
+            
+        </div>
+    </div>
+    
+    <div class="submit-container">
+        <button id="submit-button" onclick="checkPairsResult();">Submit</button>
+    </div>
+
+    <script>
+        const pairs = [
+            { source: "hello", translation: "hola" },
+            { source: "house", translation: "casa" },
+            { source: "eyes", translation: "ojos" },
+            { source: "library", translation: "biblioteca" }
+        ];
+
+        for(const pair of pairs) {
+            const sourceButton = document.createElement("button");
+            sourceButton.className = "sourceButton";
+            sourceButton.innerText = pair.source;
+            sourceButton.onclick = () => selectWord(pair.source, "source", sourceButton);
+            document.querySelector(".left-container").appendChild(sourceButton);
+
+            const translationButton = document.createElement("button");
+            translationButton.className = "translationButton";
+            translationButton.innerText = pair.translation;
+            translationButton.onclick = () => selectWord(pair.translation, "translation", translationButton);
+            document.querySelector(".right-container").appendChild(translationButton);
+        }
+
+        let selectedWord = null;
+        let selectedWordType = null;
+        let selectedButton = null;
+
+        function selectWord(word, type, btn) {
+            console.log(selectedWord, selectedWordType);
+            if(!selectedWordType || selectedWordType === type) {
+                selectedWord = word;
+                selectedWordType = type;
+                if(selectedButton !== null) {
+                    selectedButton.disabled = false;
+                    selectedButton.classList.remove("selected");
+                }
+                selectedButton = btn;
+                
+                // disable button
+                btn.disabled = true;
+                btn.classList.add("selected");
+
+            } else {
+                // logic to check if pairs match
+            }
+        }
+    </script>
+</body>
+</html>
