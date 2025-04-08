@@ -19,7 +19,22 @@
             <h2>Right column</h2>
 
             <div id="translatedWordList"></div>
-            <button type="button">Submit</button>
+        </div>
+
+    </div>
+
+    <div class="submit-container">
+        <button id="submit-button" onclick="checkResult();">Submit</button>
+    </div>
+
+    <div class="overlay-result-container" hidden="true">
+        <div class="inner-result-container">
+            <div class="correct-result result" hidden="true">
+                <h1>CORRECT!</h1>
+            </div>
+            <div class="incorrect-result result" hidden="true">
+                <h1>INCORRECT!!</h1>
+            </div>
         </div>
     </div>
 
@@ -80,6 +95,21 @@
                 originalButton.classList.remove('added-button');
                 break;
             }
+            }
+        }
+
+        function checkResult() {
+            const selectedWords = Array.from(translatedWordList.querySelectorAll('.button')).map(button => button.dataset.word);
+            const isCorrect = expectedResult.length === selectedWords.length && expectedResult.every((word, index) => word === selectedWords[index]);
+            
+            const resultContainer = document.querySelector('.overlay-result-container');
+            resultContainer.hidden = false;
+            if (isCorrect) {
+                const correctResult = document.querySelector('.correct-result');
+                correctResult.hidden = false;
+            } else {
+                const incorrectResult = document.querySelector('.incorrect-result');
+                incorrectResult.hidden = false;
             }
         }
     </script>
