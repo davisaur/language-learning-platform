@@ -10,9 +10,9 @@
     <div class="container">
         <div class="left-container column">
             <h2>Left column</h2>
-            <button class="button" id="button1" onclick="moveButton(this)">Button 1</button>
-            <button class="button" id="button2" onclick="moveButton(this)">Button 2</button>
-            <button class="button" id="button3" onclick="moveButton(this)">Button 3</button>
+            <button class="button" id="button1" onclick="addToRightColumn(this)">Button 1</button>  
+            <button class="button" id="button2" onclick="addToRightColumn(this)">Button 2</button>
+            <button class="button" id="button3" onclick="addToRightColumn(this)">Button 3</button>
         </div>
         <div class="right-container column">
             <h2>Right column</h2>
@@ -21,17 +21,33 @@
     </div>
 
     <script>
-        function moveButton(button) {
-            const rightContainer = document.querySelector('.right-container');
-            const leftContainer = document.querySelector('.left-container');
+        const rightContainer = document.querySelector('.right-container');
+        const leftContainer = document.querySelector('.left-container');
+        
+        function addToRightColumn(button) {
+            // Add to right column without removing from left column
+            const newButton = document.createElement('button');
+            newButton.className = 'button';
+            newButton.textContent = button.textContent;
+            newButton.onclick = function() {
+                removeFromRightColumn(newButton);
+            };
+            rightContainer.appendChild(newButton);
 
-            // Check if the button is already in the right container
-            if (button.parentElement === rightContainer) {
-                // Move it back to the left container
-                leftContainer.appendChild(button);
-            } else {
-                // Move it to the right container
-                rightContainer.appendChild(button);
+            // add class to the button
+            button.classList.add('added-button');
+            button.disabled = true;
+        }
+
+        function removeFromRightColumn(button) {
+            // Remove from right column
+            rightContainer.removeChild(button);
+
+            // Enable the original button in the left column
+            const originalButton = leftContainer.querySelector(`#${button.textContent.toLowerCase().replace(' ', '')}`);
+            if (originalButton) {
+                originalButton.disabled = false;
+                originalButton.classList.remove('added-button');
             }
         }
     </script>
