@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning Platform - Moving Buttons</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-container column">
+            <h2>Translate the following sentence</h2>
+            <p id="originalText"></p>
+
+            <div id="sourceWordList"></div>
+
+        </div>
+        <div class="right-container column">
+            <h2>Answer</h2>
+
+            <div id="translatedWordList"></div>
+        </div>
+
+    </div>
+
+    <div class="submit-container">
+        <button id="submit-button" onclick="checkResult();">Submit</button>
+    </div>
+
+    <div class="overlay-result-container" hidden="true">
+        <div class="inner-result-container">
+            <div class="correct-result result" hidden="true">
+                <h1>CORRECT!</h1>
+            </div>
+            <div class="incorrect-result result" hidden="true">
+                <h1>INCORRECT!!</h1>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/translation/translationWordSplitting.js"></script>
+    <script src="scripts/translation/translationAddRemove.js"></script>
+    <script src="scripts/translation/translationCheckResult.js"></script>
+</body> 
+</html>
