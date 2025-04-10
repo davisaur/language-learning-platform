@@ -16,11 +16,20 @@
         </div>
     </div>
     
-    <div class="submit-container">
-        <button id="submit-button" onclick="checkPairsResult();">Submit</button>
+    <div class="overlay-result-container" hidden="true">
+        <div class="inner-result-container">
+            <div class="correct-result result" hidden="true">
+                <h1>CORRECT!</h1>
+            </div>
+            <div class="incorrect-result result" hidden="true">
+                <h1>INCORRECT!!</h1>
+            </div>
+        </div>
     </div>
 
     <script>
+        let pairsCount = 0;
+
         const pairs = [
             { source: "hello", translation: "hola" },
             { source: "house", translation: "casa" },
@@ -28,29 +37,42 @@
             { source: "library", translation: "biblioteca" }
         ];
 
-        for(const pair of pairs) {
+
+        pairs.forEach((pair, index) => {
             const sourceButton = document.createElement("button");
-            sourceButton.className = "sourceButton";
+            sourceButton.className = "button";
             sourceButton.innerText = pair.source;
-            sourceButton.onclick = () => selectWord(pair.source, "source", sourceButton);
+            sourceButton.dataset.type = "source";
+            sourceButton.dataset.pair = index;
+            sourceButton.onclick = () => selectWord(sourceButton);
             document.querySelector(".left-container").appendChild(sourceButton);
 
             const translationButton = document.createElement("button");
-            translationButton.className = "translationButton";
+            translationButton.className = "button";
             translationButton.innerText = pair.translation;
-            translationButton.onclick = () => selectWord(pair.translation, "translation", translationButton);
+            translationButton.dataset.type = "translation";
+            translationButton.dataset.pair = index;
+            translationButton.onclick = () => selectWord(translationButton);
             document.querySelector(".right-container").appendChild(translationButton);
-        }
+            
+            pairsCount++;
+        });
 
-        let selectedWord = null;
-        let selectedWordType = null;
+        // shuffle the order of buttons in each container
+        const leftContainer = document.querySelector(".left-container");
+        const rightContainer = document.querySelector(".right-container");
+        const leftButtons = Array.from(leftContainer.children);
+        const rightButtons = Array.from(rightContainer.children);
+        leftButtons.sort(() => Math.random() - 0.5);
+        rightButtons.sort(() => Math.random() - 0.5);
+        leftButtons.forEach(button => leftContainer.appendChild(button));
+        rightButtons.forEach(button => rightContainer.appendChild(button));
+
+
         let selectedButton = null;
 
-        function selectWord(word, type, btn) {
-            console.log(selectedWord, selectedWordType);
-            if(!selectedWordType || selectedWordType === type) {
-                selectedWord = word;
-                selectedWordType = type;
+        function selectWord(btn) {
+            if(!selectedButton || selectedButton.dataset.type === btn.dataset.type) {
                 if(selectedButton !== null) {
                     selectedButton.disabled = false;
                     selectedButton.classList.remove("selected");
@@ -58,11 +80,31 @@
                 selectedButton = btn;
                 
                 // disable button
-                btn.disabled = true;
                 btn.classList.add("selected");
 
             } else {
-                // logic to check if pairs match
+                if(selectedButton.dataset.pair === btn.dataset.pair) {
+                    selectedButton.classList.remove("selected");
+                    
+                    btn.disabled = true;
+                    btn.classList.add("correct");
+
+                    selectedButton.disabled = true;
+                    selectedButton.classList.add("correct");
+                    pairsCount--;
+                    if(pairsCount === 0) {
+                        // All pairs matched
+                        document.querySelector(".overlay-result-container").hidden = false;
+                        document.querySelector(".correct-result").hidden = false;
+                    }
+                } else {
+                    // Incorrect match
+                    selectedButton.classList.remove("selected");
+                }
+                selectedButton = null;
+
+                
+
             }
         }
     </script>
