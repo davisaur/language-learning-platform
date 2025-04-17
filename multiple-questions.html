@@ -30,37 +30,41 @@
 
     <div class="multiple-choice-container" hidden>
         <div class="question-container">
-
+            <h2 class="matching-question-text"></h2>
         </div>
         <div class="answers-container">
 
         </div>
-        <div class="submit-container">
-            <button id="submit-button" onclick="checkMultipleResult();" disabled>Submit</button>
-        </div>
+    </div>
+
+    <div class="submit-container">
+        <button id="submit-button" onclick="checkResult();" disabled>Submit</button>
     </div>
 
     <div class="overlay-result-container" hidden="true">
         <div class="inner-result-container">
             <div class="correct-result result" hidden="true">
                 <h1>CORRECT!</h1>
-                <button onclick="showQuestion();">Continue</button>
+                <button onclick="nextQuestion();">Continue</button>
             </div>
             <div class="incorrect-result result" hidden="true">
                 <h1>INCORRECT!!</h1>
-                <button onclick="showQuestion();">Continue</button>
+                <button onclick="nextQuestion();">Continue</button>
             </div>
         </div>
     </div>
 
     <script>
+        const questionsIndex = [];
+        let currentQuestionIndex = 0;
+        let selectedButton = null;
+
         // Translation Variables
         const sourceWordList = document.querySelector('#sourceWordList');
         const translatedWordList = document.querySelector('#translatedWordList');
 
         // Word Matching Variables
         let pairsCount = 0;
-        let selectedButton = null;
 
         // Multiple Choice Variables
         const submitButton = document.getElementById('submit-button');
@@ -98,88 +102,88 @@
                 }
             ]
         }
-
-        let currentQuestion = 2;
-        const questionsIndex = [];
-        
+        // Initialize the question index
         for (let i = 0; i < questions.questions.length; i++) {
             questionsIndex.push(i);
         }
 
-        if(questions.questions[questionsIndex[currentQuestion]].type === "TRANSLATION") {
-            document.querySelector(".translation-container").hidden = false;
-            document.querySelector('#originalText').textContent = questions.questions[questionsIndex[currentQuestion]].question.sourceText;
+        let currentQuestion = questions.questions[questionsIndex[currentQuestionIndex]];
 
-            const expectedResult = questions.questions[questionsIndex[currentQuestion]].question.translatedText.split(' ').map(word => word.toLowerCase());
-            const scrambledWordList = expectedResult.slice().sort(() => Math.random() - 0.5);
+        processQuestion();
 
-            for (const word of scrambledWordList) {
-                const button = document.createElement('button');
-                button.className = 'button';
-                button.textContent = word;
-                button.dataset.word = word.toLowerCase();
-                button.onclick = function () {
-                addToTranslation(button);
-                };
-                sourceWordList.appendChild(button);
-            }
-        } else if (questions.questions[questionsIndex[currentQuestion]].type === "MATCH_THE_WORDS") {
-            document.querySelector(".word-matching-container").hidden = false;
-            const leftMatchingContainer = document.querySelector(".left-matching-container");
-            const rightMatchingContainer = document.querySelector(".right-matching-container");
+        function processQuestion() {
+            if(currentQuestion.type === "TRANSLATION") {
+                document.querySelector(".translation-container").hidden = false;
+                document.querySelector('#originalText').textContent = currentQuestion.question.sourceText;
 
-            const pairs = questions.questions[questionsIndex[currentQuestion]].question.pairs;
+                const expectedResult = currentQuestion.question.translatedText.split(' ').map(word => word.toLowerCase());
+                const scrambledWordList = expectedResult.slice().sort(() => Math.random() - 0.5);
 
-            pairs.forEach((pair, index) => {
-                const sourceButton = document.createElement("button");
-                sourceButton.className = "button";
-                sourceButton.innerText = pair.source;
-                sourceButton.dataset.type = "source";
-                sourceButton.dataset.pair = index;
-                sourceButton.onclick = () => selectMatchingWord(sourceButton);
-                leftMatchingContainer.appendChild(sourceButton);
+                for (const word of scrambledWordList) {
+                    const button = document.createElement('button');
+                    button.className = 'button';
+                    button.textContent = word;
+                    button.dataset.word = word.toLowerCase();
+                    button.onclick = function () {
+                    addToTranslation(button);
+                    };
+                    sourceWordList.appendChild(button);
+                }
+            } else if (currentQuestion.type === "MATCH_THE_WORDS") {
+                document.querySelector(".word-matching-container").hidden = false;
+                const leftMatchingContainer = document.querySelector(".left-matching-container");
+                const rightMatchingContainer = document.querySelector(".right-matching-container");
 
-                const translationButton = document.createElement("button");
-                translationButton.className = "button";
-                translationButton.innerText = pair.translation;
-                translationButton.dataset.type = "translation";
-                translationButton.dataset.pair = index;
-                translationButton.onclick = () => selectMatchingWord(translationButton);
-                rightMatchingContainer.appendChild(translationButton);
+                const pairs = currentQuestion.question.pairs;
+
+                pairs.forEach((pair, index) => {
+                    const sourceButton = document.createElement("button");
+                    sourceButton.className = "button";
+                    sourceButton.innerText = pair.source;
+                    sourceButton.dataset.type = "source";
+                    sourceButton.dataset.pair = index;
+                    sourceButton.onclick = () => selectMatchingWord(sourceButton);
+                    leftMatchingContainer.appendChild(sourceButton);
+
+                    const translationButton = document.createElement("button");
+                    translationButton.className = "button";
+                    translationButton.innerText = pair.translation;
+                    translationButton.dataset.type = "translation";
+                    translationButton.dataset.pair = index;
+                    translationButton.onclick = () => selectMatchingWord(translationButton);
+                    rightMatchingContainer.appendChild(translationButton);
+                    
+                    pairsCount++;
+                });
+
+                // Randomize buttons
+                const leftButtons = Array.from(leftMatchingContainer.children);
+                const rightButtons = Array.from(rightMatchingContainer.children);
+                leftButtons.sort(() => Math.random() - 0.5);
+                rightButtons.sort(() => Math.random() - 0.5);
+                leftButtons.forEach(button => leftMatchingContainer.appendChild(button));
+                rightButtons.forEach(button => rightMatchingContainer.appendChild(button));
+
+
+            } else if (currentQuestion.type === "MULTIPLE_CHOICE") {
+                document.querySelector(".multiple-choice-container").hidden = false;
+
                 
-                pairsCount++;
-            });
+                const questionContainer = document.querySelector('.question-container');
+                const answersContainer = document.querySelector('.answers-container');
 
-            // Randomize buttons
-            const leftButtons = Array.from(leftMatchingContainer.children);
-            const rightButtons = Array.from(rightMatchingContainer.children);
-            leftButtons.sort(() => Math.random() - 0.5);
-            rightButtons.sort(() => Math.random() - 0.5);
-            leftButtons.forEach(button => leftMatchingContainer.appendChild(button));
-            rightButtons.forEach(button => rightMatchingContainer.appendChild(button));
+                document.querySelector('.matching-question-text').textContent = currentQuestion.question.question;
 
-
-        } else if (questions.questions[questionsIndex[currentQuestion]].type === "MULTIPLE_CHOICE") {
-            document.querySelector(".multiple-choice-container").hidden = false;
-            
-            const questionContainer = document.querySelector('.question-container');
-            const answersContainer = document.querySelector('.answers-container');
-            const submitButton = document.getElementById('submit-button');
-
-            // Create question element
-            const questionElement = document.createElement('h2');
-            questionElement.textContent = questions.questions[questionsIndex[currentQuestion]].question.question;
-            questionContainer.appendChild(questionElement);
-
-            // Create answer elements
-            questions.questions[questionsIndex[currentQuestion]].question.answers.forEach(answer => {
-                const answerElement = document.createElement('button');
-                answerElement.classList.add('answer');
-                answerElement.textContent = answer.text;
-                answerElement.dataset.correct = answer.correct;
-                answerElement.onclick = () => selectWord(answerElement);
-                answersContainer.appendChild(answerElement);
-            });
+                // Create answer elements
+                currentQuestion.question.answers.forEach(answer => {
+                    const answerElement = document.createElement('button');
+                    answerElement.classList.add('answer');
+                    answerElement.textContent = answer.text;
+                    answerElement.dataset.correct = answer.correct;
+                    answerElement.onclick = () => selectWord(answerElement);
+                    answersContainer.appendChild(answerElement);
+                });
+            }
         }
 
         function addToTranslation(button) {
@@ -196,6 +200,10 @@
             // add class to the button
             button.classList.add('added-button');
             button.disabled = true;
+
+            if(submitButton.disabled) {
+                submitButton.disabled = false;
+            }
         }
 
         function removeFromTranslation(button) {
@@ -211,8 +219,12 @@
                     break;
                 }
             }
-        }
 
+            if(translatedWordList.children.length === 0) {
+                submitButton.disabled = true;
+            }
+            
+        }
 
         function selectMatchingWord(btn) {
             if(!selectedButton || selectedButton.dataset.type === btn.dataset.type) {
@@ -236,9 +248,7 @@
                     selectedButton.classList.add("correct");
                     pairsCount--;
                     if(pairsCount === 0) {
-                        // All pairs matched
-                        document.querySelector(".overlay-result-container").hidden = false;
-                        document.querySelector(".correct-result").hidden = false;
+                        showResult(true);
                     }
                 } else {
                     // Incorrect match
@@ -262,56 +272,75 @@
         }
 
         function checkResult() {
-            const expectedResult = questions.questions[questionsIndex[currentQuestion]].question.translatedText.split(' ').map(word => word.toLowerCase());
-            const selectedWords = Array.from(translatedWordList.querySelectorAll('.button')).map(button => button.dataset.word);
-            const isCorrect = expectedResult.length === selectedWords.length && expectedResult.every((word, index) => word === selectedWords[index]);
+            if(currentQuestion.type === "TRANSLATION") {
+                const expectedResult = currentQuestion.question.translatedText.split(' ').map(word => word.toLowerCase());
+                const selectedWords = Array.from(translatedWordList.querySelectorAll('.button')).map(button => button.dataset.word);
+                const isCorrect = expectedResult.length === selectedWords.length && expectedResult.every((word, index) => word === selectedWords[index]);
+                
+                if(isCorrect) {
+                    showResult(true);
+                } else {
+                    showResult(false);
+                }
+            } else if(currentQuestion.type === "MULTIPLE_CHOICE") {
+                if(selectedButton.dataset.correct === "true") {
+                    showResult(true);
+                } else {
+                    showResult(false);
+                }
+            }
             
-            if(isCorrect) {
-                showResult(true);
-            } else {
-                showResult(false);
-            }
-        }
-        
-        function checkMultipleResult() {
-
-            // TODO: clean up check functions 
-            if(selectedButton.dataset.correct === "true") {
-                showResult(true);
-            } else {
-                showResult(false);
-            }
         }
 
         function showResult(result) {
             document.querySelector('.overlay-result-container').hidden = false;
             if (result) {
-                questionsIndex.splice(currentQuestion, 1);
+                questionsIndex.splice(currentQuestionIndex, 1);
                 document.querySelector('.correct-result').hidden = false;
             } else {
-                if(currentQuestion < questionsIndex.length - 1) {
-                    currentQuestion++;
+                if(currentQuestionIndex < questionsIndex.length - 1) {
+                    currentQuestionIndex++;
                 }
                 document.querySelector('.incorrect-result').hidden = false;
             }
-            if(currentQuestion > questionsIndex.length - 1) {
+            if(currentQuestionIndex > questionsIndex.length - 1) {
                 if(questionsIndex.length > 0) {
-                    currentQuestion = 0;
+                    currentQuestionIndex = 0;
                 } else {
                     document.querySelector('.overlay-result-container').hidden = true;
                     alert("Lesson Complete!");  
                 }
             }
+            console.log("Current question index: ", currentQuestionIndex);
+            console.log("Questions index: ", questionsIndex);
+
         }
 
-        function showQuestion() {
-            questionElement.textContent = questions.questions[questionsIndex[currentQuestion]].question;
+        function nextQuestion() {
+            currentQuestion = questions.questions[questionsIndex[currentQuestionIndex]];
+            // clear previous question and answers
+            sourceWordList.innerHTML = '';
+            translatedWordList.innerHTML = '';
+            document.querySelector('.left-matching-container').innerHTML = '';
+            document.querySelector('.right-matching-container').innerHTML = '';
+            document.querySelector('.answers-container').innerHTML = '';
+            submitButton.disabled = true;
+            selectedButton = null;
+            pairsCount = 0;
+
+            // hide the result overlay
             document.querySelector('.overlay-result-container').hidden = true;
             document.querySelector('.correct-result').hidden = true;
             document.querySelector('.incorrect-result').hidden = true;
 
+            // hide all containers
+            document.querySelector(".translation-container").hidden = true;
+            document.querySelector(".word-matching-container").hidden = true;
+            document.querySelector(".multiple-choice-container").hidden = true;
 
-
+            // process next question
+            processQuestion();
+            
         }
     </script>
 </body>
