@@ -24,6 +24,7 @@
             <div class="right-matching-container">
 
             </div>
+            
         </div>
     </div>
 
@@ -33,6 +34,9 @@
         </div>
         <div class="answers-container">
 
+        </div>
+        <div class="submit-container">
+            <button id="submit-button" onclick="checkMultipleResult();" disabled>Submit</button>
         </div>
     </div>
 
@@ -57,6 +61,9 @@
         // Word Matching Variables
         let pairsCount = 0;
         let selectedButton = null;
+
+        // Multiple Choice Variables
+        const submitButton = document.getElementById('submit-button');
 
         const questions = {
             "questions": [{ 
@@ -92,7 +99,7 @@
             ]
         }
 
-        let currentQuestion = 1;
+        let currentQuestion = 2;
         const questionsIndex = [];
         
         for (let i = 0; i < questions.questions.length; i++) {
@@ -153,7 +160,26 @@
 
 
         } else if (questions.questions[questionsIndex[currentQuestion]].type === "MULTIPLE_CHOICE") {
+            document.querySelector(".multiple-choice-container").hidden = false;
+            
+            const questionContainer = document.querySelector('.question-container');
+            const answersContainer = document.querySelector('.answers-container');
+            const submitButton = document.getElementById('submit-button');
 
+            // Create question element
+            const questionElement = document.createElement('h2');
+            questionElement.textContent = questions.questions[questionsIndex[currentQuestion]].question.question;
+            questionContainer.appendChild(questionElement);
+
+            // Create answer elements
+            questions.questions[questionsIndex[currentQuestion]].question.answers.forEach(answer => {
+                const answerElement = document.createElement('button');
+                answerElement.classList.add('answer');
+                answerElement.textContent = answer.text;
+                answerElement.dataset.correct = answer.correct;
+                answerElement.onclick = () => selectWord(answerElement);
+                answersContainer.appendChild(answerElement);
+            });
         }
 
         function addToTranslation(button) {
@@ -223,12 +249,34 @@
             }
         }
 
+        function selectWord(btn) {
+            if(selectedButton !== null) {
+                selectedButton.disabled = false;
+                selectedButton.classList.remove("selected");
+            }
+            selectedButton = btn;
+            
+            // disable  
+            btn.classList.add("selected");
+            submitButton.disabled = false;
+        }
+
         function checkResult() {
             const expectedResult = questions.questions[questionsIndex[currentQuestion]].question.translatedText.split(' ').map(word => word.toLowerCase());
             const selectedWords = Array.from(translatedWordList.querySelectorAll('.button')).map(button => button.dataset.word);
             const isCorrect = expectedResult.length === selectedWords.length && expectedResult.every((word, index) => word === selectedWords[index]);
             
             if(isCorrect) {
+                showResult(true);
+            } else {
+                showResult(false);
+            }
+        }
+        
+        function checkMultipleResult() {
+
+            // TODO: clean up check functions 
+            if(selectedButton.dataset.correct === "true") {
                 showResult(true);
             } else {
                 showResult(false);
