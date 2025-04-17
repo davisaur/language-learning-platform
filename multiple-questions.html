@@ -298,7 +298,7 @@
                 questionsIndex.splice(currentQuestionIndex, 1);
                 document.querySelector('.correct-result').hidden = false;
             } else {
-                if(currentQuestionIndex < questionsIndex.length - 1) {
+                if(currentQuestionIndex <=   questionsIndex.length - 1) {
                     currentQuestionIndex++;
                 }
                 document.querySelector('.incorrect-result').hidden = false;
