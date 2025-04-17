@@ -7,53 +7,158 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="question-container">
-        <p id="question-id"></p>
+    <div class="translation-container" hidden>
+        <h2>Translate the following sentence</h2>
+        <p id="originalText"></p>
+        <div id="sourceWordList"></div>
 
-        <button onclick="showResult(true);">Correct</button>
-        <button onclick="showResult(false);">Wrong</button>
+        <h2>Answer</h2>
+        <div id="translatedWordList"></div>
+    </div>
 
+    <div class="word-matching-container" hidden>
+        <div class="matching-column-container">
+            <div class="left-matching-container">
+
+            </div>
+            <div class="right-matching-container">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="multiple-choice-container" hidden>
+        <div class="question-container">
+
+        </div>
+        <div class="answers-container">
+
+        </div>
     </div>
 
     <div class="overlay-result-container" hidden="true">
         <div class="inner-result-container">
             <div class="correct-result result" hidden="true">
                 <h1>CORRECT!</h1>
-                <button onclick="continueToNextQuestion();">Continue</button>
+                <button onclick="showQuestion();">Continue</button>
             </div>
             <div class="incorrect-result result" hidden="true">
                 <h1>INCORRECT!!</h1>
-                <button onclick="continueToNextQuestion();">Continue</button>
+                <button onclick="showQuestion();">Continue</button>
             </div>
         </div>
     </div>
 
     <script>
+        const sourceWordList = document.querySelector('#sourceWordList');
+        const translatedWordList = document.querySelector('#translatedWordList');
+
         const questions = {
-            "questions": [
-                { "question": "1" },
-                { "question": "2" },
-                { "question": "3" },
-                { "question": "4" },
-                { "question": "5" },
-                { "question": "6" },
-                { "question": "7" },
-                { "question": "8" },
-                { "question": "9" },
-                { "question": "10" }
+            "questions": [{ 
+                "type": "TRANSLATION",
+                "question": {
+                    "sourceText": "The quick brown fox jumps over the lazy dog",
+                     "translatedText": "El rápido zorro marrón salta sobre el perro perezoso" 
+                    } 
+                },
+                { 
+                    "type": "MATCH_THE_WORDS",
+                    "question": {
+                        "pairs": [
+                            { source: "hello", translation: "hola" },
+                            { source: "house", translation: "casa" },
+                            { source: "eyes", translation: "ojos" },
+                            { source: "library", translation: "biblioteca" }
+                        ]
+                    } 
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "question": {
+                        "question": "What is the word for library?",
+                        "answers": [
+                        {"text": "biblioteca", "correct": true},
+                        {"text": "libreria", "correct": false},
+                        {"text": "libro", "correct": false},
+                        {"text": "libros", "correct": false}
+                    ]
+                    }
+                }
             ]
         }
 
+        let currentQuestion = 0;
         const questionsIndex = [];
         
         for (let i = 0; i < questions.questions.length; i++) {
             questionsIndex.push(i);
         }
-        let currentQuestion = 0;
 
-        const questionElement = document.getElementById('question-id');
-        questionElement.textContent = questions.questions[questionsIndex[currentQuestion]].question;
+        if(questions.questions[questionsIndex[currentQuestion]].type === "TRANSLATION") {
+            document.querySelector(".translation-container").hidden = false;
+            document.querySelector('#originalText').textContent = questions.questions[questionsIndex[currentQuestion]].question.sourceText;
 
+            const expectedResult = questions.questions[questionsIndex[currentQuestion]].question.translatedText.split(' ').map(word => word.toLowerCase());
+            const scrambledWordList = expectedResult.slice().sort(() => Math.random() - 0.5);
+
+            for (const word of scrambledWordList) {
+                const button = document.createElement('button');
+                button.className = 'button';
+                button.textContent = word;
+                button.dataset.word = word.toLowerCase();
+                button.onclick = function () {
+                addToTranslation(button);
+                };
+                sourceWordList.appendChild(button);
+            }
+        } else if (questions.questions[questionsIndex[currentQuestion]].type === "MATCH_THE_WORDS") {
+
+        } else if (questions.questions[questionsIndex[currentQuestion]].type === "MULTIPLE_CHOICE") {
+
+        }
+
+        function addToTranslation(button) {
+            // Add to right column without removing from left column
+            const newButton = document.createElement('button');
+            newButton.className = 'button';
+            newButton.textContent = button.textContent;
+            newButton.dataset.word = button.dataset.word;
+            newButton.onclick = function () {
+            removeFromTranslation(newButton);
+            };
+            translatedWordList.appendChild(newButton);
+
+            // add class to the button
+            button.classList.add('added-button');
+            button.disabled = true;
+        }
+
+        function removeFromTranslation(button) {
+            // Remove from right column
+            translatedWordList.removeChild(button);
+
+            // Enable the original button in the left column
+            const originalButtons = sourceWordList.querySelectorAll(`[data-word="${button.dataset.word}"]`);
+            for (const originalButton of originalButtons) {
+                if (originalButton.disabled) {
+                    originalButton.disabled = false;
+                    originalButton.classList.remove('added-button');
+                    break;
+                }
+            }
+        }
+
+        function checkResult() {
+            const expectedResult = questions.questions[questionsIndex[currentQuestion]].question.translatedText.split(' ').map(word => word.toLowerCase());
+            const selectedWords = Array.from(translatedWordList.querySelectorAll('.button')).map(button => button.dataset.word);
+            const isCorrect = expectedResult.length === selectedWords.length && expectedResult.every((word, index) => word === selectedWords[index]);
+            
+            if(isCorrect) {
+                showResult(true);
+            } else {
+                showResult(false);
+            }
+        }
 
         function showResult(result) {
             document.querySelector('.overlay-result-container').hidden = false;
@@ -61,7 +166,7 @@
                 questionsIndex.splice(currentQuestion, 1);
                 document.querySelector('.correct-result').hidden = false;
             } else {
-                if(currentQuestion <= questionsIndex.length - 1) {
+                if(currentQuestion < questionsIndex.length - 1) {
                     currentQuestion++;
                 }
                 document.querySelector('.incorrect-result').hidden = false;
@@ -76,11 +181,13 @@
             }
         }
 
-        function continueToNextQuestion() {
+        function showQuestion() {
             questionElement.textContent = questions.questions[questionsIndex[currentQuestion]].question;
             document.querySelector('.overlay-result-container').hidden = true;
             document.querySelector('.correct-result').hidden = true;
             document.querySelector('.incorrect-result').hidden = true;
+
+
 
         }
     </script>
