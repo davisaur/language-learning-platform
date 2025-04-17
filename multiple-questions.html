@@ -50,8 +50,13 @@
     </div>
 
     <script>
+        // Translation Variables
         const sourceWordList = document.querySelector('#sourceWordList');
         const translatedWordList = document.querySelector('#translatedWordList');
+
+        // Word Matching Variables
+        let pairsCount = 0;
+        let selectedButton = null;
 
         const questions = {
             "questions": [{ 
@@ -87,7 +92,7 @@
             ]
         }
 
-        let currentQuestion = 0;
+        let currentQuestion = 1;
         const questionsIndex = [];
         
         for (let i = 0; i < questions.questions.length; i++) {
@@ -112,6 +117,40 @@
                 sourceWordList.appendChild(button);
             }
         } else if (questions.questions[questionsIndex[currentQuestion]].type === "MATCH_THE_WORDS") {
+            document.querySelector(".word-matching-container").hidden = false;
+            const leftMatchingContainer = document.querySelector(".left-matching-container");
+            const rightMatchingContainer = document.querySelector(".right-matching-container");
+
+            const pairs = questions.questions[questionsIndex[currentQuestion]].question.pairs;
+
+            pairs.forEach((pair, index) => {
+                const sourceButton = document.createElement("button");
+                sourceButton.className = "button";
+                sourceButton.innerText = pair.source;
+                sourceButton.dataset.type = "source";
+                sourceButton.dataset.pair = index;
+                sourceButton.onclick = () => selectMatchingWord(sourceButton);
+                leftMatchingContainer.appendChild(sourceButton);
+
+                const translationButton = document.createElement("button");
+                translationButton.className = "button";
+                translationButton.innerText = pair.translation;
+                translationButton.dataset.type = "translation";
+                translationButton.dataset.pair = index;
+                translationButton.onclick = () => selectMatchingWord(translationButton);
+                rightMatchingContainer.appendChild(translationButton);
+                
+                pairsCount++;
+            });
+
+            // Randomize buttons
+            const leftButtons = Array.from(leftMatchingContainer.children);
+            const rightButtons = Array.from(rightMatchingContainer.children);
+            leftButtons.sort(() => Math.random() - 0.5);
+            rightButtons.sort(() => Math.random() - 0.5);
+            leftButtons.forEach(button => leftMatchingContainer.appendChild(button));
+            rightButtons.forEach(button => rightMatchingContainer.appendChild(button));
+
 
         } else if (questions.questions[questionsIndex[currentQuestion]].type === "MULTIPLE_CHOICE") {
 
@@ -145,6 +184,42 @@
                     originalButton.classList.remove('added-button');
                     break;
                 }
+            }
+        }
+
+
+        function selectMatchingWord(btn) {
+            if(!selectedButton || selectedButton.dataset.type === btn.dataset.type) {
+                if(selectedButton !== null) {
+                    selectedButton.disabled = false;
+                    selectedButton.classList.remove("selected");
+                }
+                selectedButton = btn;
+                
+                // disable button
+                btn.classList.add("selected");
+
+            } else {
+                if(selectedButton.dataset.pair === btn.dataset.pair) {
+                    selectedButton.classList.remove("selected");
+                    
+                    btn.disabled = true;
+                    btn.classList.add("correct");
+
+                    selectedButton.disabled = true;
+                    selectedButton.classList.add("correct");
+                    pairsCount--;
+                    if(pairsCount === 0) {
+                        // All pairs matched
+                        document.querySelector(".overlay-result-container").hidden = false;
+                        document.querySelector(".correct-result").hidden = false;
+                    }
+                } else {
+                    // Incorrect match
+                    selectedButton.classList.remove("selected");
+                }
+                selectedButton = null;
+                console.log("Selected button: ", selectedButton);
             }
         }
 
