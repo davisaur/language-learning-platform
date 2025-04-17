@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Questions</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="question-container">
+        <p id="question-id"></p>
+
+        <button onclick="showResult(true);">Correct</button>
+        <button onclick="showResult(false);">Wrong</button>
+
+    </div>
+
+    <div class="overlay-result-container" hidden="true">
+        <div class="inner-result-container">
+            <div class="correct-result result" hidden="true">
+                <h1>CORRECT!</h1>
+                <button onclick="continueToNextQuestion();">Continue</button>
+            </div>
+            <div class="incorrect-result result" hidden="true">
+                <h1>INCORRECT!!</h1>
+                <button onclick="continueToNextQuestion();">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = {
+            "questions": [
+                { "question": "1" },
+                { "question": "2" },
+                { "question": "3" },
+                { "question": "4" },
+                { "question": "5" },
+                { "question": "6" },
+                { "question": "7" },
+                { "question": "8" },
+                { "question": "9" },
+                { "question": "10" }
+            ]
+        }
+
+        const questionsIndex = [];
+        
+        for (let i = 0; i < questions.questions.length; i++) {
+            questionsIndex.push(i);
+        }
+        let currentQuestion = 0;
+
+        const questionElement = document.getElementById('question-id');
+        questionElement.textContent = questions.questions[questionsIndex[currentQuestion]].question;
+
+
+        function showResult(result) {
+            document.querySelector('.overlay-result-container').hidden = false;
+            if (result) {
+                questionsIndex.splice(currentQuestion, 1);
+                document.querySelector('.correct-result').hidden = false;
+            } else {
+                if(currentQuestion <= questionsIndex.length - 1) {
+                    currentQuestion++;
+                }
+                document.querySelector('.incorrect-result').hidden = false;
+            }
+            if(currentQuestion > questionsIndex.length - 1) {
+                if(questionsIndex.length > 0) {
+                    currentQuestion = 0;
+                } else {
+                    document.querySelector('.overlay-result-container').hidden = true;
+                    alert("Lesson Complete!");  
+                }
+            }
+        }
+
+        function continueToNextQuestion() {
+            questionElement.textContent = questions.questions[questionsIndex[currentQuestion]].question;
+            document.querySelector('.overlay-result-container').hidden = true;
+            document.querySelector('.correct-result').hidden = true;
+            document.querySelector('.incorrect-result').hidden = true;
+
+        }
+    </script>
+</body>
+</html>
