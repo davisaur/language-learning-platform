@@ -6,7 +6,7 @@
     <title>Multiple Questions</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="lesson.css">
-</head>
+ </head>
 <body>
     <div class="progress-bar-container">
         <div class="progress-bar"> </div>
@@ -14,10 +14,8 @@
     <div class="translation-container" hidden>
         <h2>Translate the following sentence</h2>
         <p id="originalText"></p>
-        <div id="sourceWordList"></div>
-
-        <h2>Answer</h2>
-        <div id="translatedWordList"></div>
+        <div id="translated-word-list"> </div>
+        <div id="source-word-list"></div>
     </div>
 
     <div class="word-matching-container" hidden>
@@ -64,8 +62,8 @@
         let selectedButton = null;
 
         // Translation Variables
-        const sourceWordList = document.querySelector('#sourceWordList');
-        const translatedWordList = document.querySelector('#translatedWordList');
+        const sourceWordList = document.querySelector('#source-word-list');
+        const translatedWordList = document.querySelector('#translated-word-list');
 
         // Word Matching Variables
         let pairsCount = 0;
