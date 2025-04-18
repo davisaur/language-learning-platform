@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multiple Questions</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="lesson.css">
 </head>
 <body>
     <div class="translation-container" hidden>
@@ -70,38 +71,107 @@
         const submitButton = document.getElementById('submit-button');
 
         const questions = {
-            "questions": [{ 
+            "questions": [
+                {
                 "type": "TRANSLATION",
                 "question": {
-                    "sourceText": "The quick brown fox jumps over the lazy dog",
-                     "translatedText": "El rápido zorro marrón salta sobre el perro perezoso" 
-                    } 
-                },
-                { 
-                    "type": "MATCH_THE_WORDS",
-                    "question": {
-                        "pairs": [
-                            { source: "hello", translation: "hola" },
-                            { source: "house", translation: "casa" },
-                            { source: "eyes", translation: "ojos" },
-                            { source: "library", translation: "biblioteca" }
-                        ]
-                    } 
+                    "sourceText": "I would like a coffee, please",
+                    "translatedText": "Me gustaría un café, por favor"
+                }
                 },
                 {
-                    "type": "MULTIPLE_CHOICE",
-                    "question": {
-                        "question": "What is the word for library?",
-                        "answers": [
-                        {"text": "biblioteca", "correct": true},
-                        {"text": "libreria", "correct": false},
-                        {"text": "libro", "correct": false},
-                        {"text": "libros", "correct": false}
+                "type": "MATCH_THE_WORDS",
+                "question": {
+                    "pairs": [
+                    { "source": "water", "translation": "agua" },
+                    { "source": "menu", "translation": "menú" },
+                    { "source": "waiter", "translation": "camarero" },
+                    { "source": "bill", "translation": "cuenta" }
                     ]
-                    }
+                }
+                },
+                {
+                "type": "MULTIPLE_CHOICE",
+                "question": {
+                    "question": "How do you say 'I am hungry' in Spanish?",
+                    "answers": [
+                    { "text": "Tengo hambre", "correct": true },
+                    { "text": "Estoy sediento", "correct": false },
+                    { "text": "Quiero comida", "correct": false },
+                    { "text": "Necesito agua", "correct": false }
+                    ]
+                }
+                },
+                {
+                "type": "TRANSLATION",
+                "question": {
+                    "sourceText": "Can I see the menu?",
+                    "translatedText": "¿Puedo ver el menú?"
+                }
+                },
+                {
+                "type": "MATCH_THE_WORDS",
+                "question": {
+                    "pairs": [
+                    { "source": "fork", "translation": "tenedor" },
+                    { "source": "knife", "translation": "cuchillo" },
+                    { "source": "spoon", "translation": "cuchara" },
+                    { "source": "napkin", "translation": "servilleta" }
+                    ]
+                }
+                },
+                {
+                "type": "MULTIPLE_CHOICE",
+                "question": {
+                    "question": "What is the Spanish word for 'chicken'?",
+                    "answers": [
+                    { "text": "pollo", "correct": true },
+                    { "text": "pescado", "correct": false },
+                    { "text": "carne", "correct": false },
+                    { "text": "pan", "correct": false }
+                    ]
+                }
+                },
+                {
+                "type": "TRANSLATION",
+                "question": {
+                    "sourceText": "The food is delicious",
+                    "translatedText": "La comida está deliciosa"
+                }
+                },
+                {
+                "type": "MULTIPLE_CHOICE",
+                "question": {
+                    "question": "How do you say 'check, please' in Spanish?",
+                    "answers": [
+                    { "text": "La cuenta, por favor", "correct": true },
+                    { "text": "El menú, por favor", "correct": false },
+                    { "text": "La carta, por favor", "correct": false },
+                    { "text": "La comida, por favor", "correct": false }
+                    ]
+                }
+                },
+                {
+                "type": "TRANSLATION",
+                "question": {
+                    "sourceText": "Do you have vegetarian options?",
+                    "translatedText": "¿Tiene opciones vegetarianas?"
+                }
+                },
+                {
+                "type": "MATCH_THE_WORDS",
+                "question": {
+                    "pairs": [
+                    { "source": "table", "translation": "mesa" },
+                    { "source": "drink", "translation": "bebida" },
+                    { "source": "reservation", "translation": "reserva" },
+                    { "source": "dish", "translation": "plato" }
+                    ]
+                }
                 }
             ]
         }
+
         // Initialize the question index
         for (let i = 0; i < questions.questions.length; i++) {
             questionsIndex.push(i);
