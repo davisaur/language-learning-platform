@@ -35,7 +35,7 @@
         <div class="question-container">
             <h2 class="matching-question-text"></h2>
         </div>
-        <div class="answers-container">
+        <div class="multiple-choice-answers">
 
         </div>
     </div>
@@ -246,14 +246,14 @@
 
                 
                 const questionContainer = document.querySelector('.question-container');
-                const answersContainer = document.querySelector('.answers-container');
+                const answersContainer = document.querySelector('.multiple-choice-answers');
 
                 document.querySelector('.matching-question-text').textContent = currentQuestion.question.question;
 
                 // Create answer elements
                 currentQuestion.question.answers.forEach(answer => {
                     const answerElement = document.createElement('button');
-                    answerElement.classList.add('answer');
+                    answerElement.classList.add('multiple-choice-button');
                     answerElement.textContent = answer.text;
                     answerElement.dataset.correct = answer.correct;
                     answerElement.onclick = () => selectWord(answerElement);
@@ -413,7 +413,7 @@
             translatedWordList.innerHTML = '';
             document.querySelector('.left-matching-container').innerHTML = '';
             document.querySelector('.right-matching-container').innerHTML = '';
-            document.querySelector('.answers-container').innerHTML = '';
+            document.querySelector('.multiple-choice-answers').innerHTML = '';
             submitButton.disabled = true;
             selectedButton = null;
             pairsCount = 0;

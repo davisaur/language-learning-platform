@@ -257,3 +257,15 @@ button:disabled {
     background-color: #fff;
     animation: correct-fade 1s ease-in-out;
 }
+
+/* Multiple Choice Activity Styles */
+
+.multiple-choice-answers {
+    margin-top: 3em;
+}
+
+.multiple-choice-button {
+    width: 100%;
+    margin: 0.4em 0;
+    height: 3em;
+}
