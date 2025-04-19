@@ -154,6 +154,7 @@ button:disabled {
 }
 
 .incorrect-button {
+    color: #fff;;
     background-color: var(--incorrect-color);
     box-shadow: #cc5151 0px 3px 0px;
 }
@@ -235,7 +236,7 @@ button:disabled {
     }
 }
 
-.incorrect-button {
+.incorrect-answer {
     background-color: #fff;
     animation: incorrect-fade 1s ease-in-out;
 }
@@ -253,7 +254,7 @@ button:disabled {
     }
 }
 
-.correct-button {
+.correct-answer {
     background-color: #fff;
     animation: correct-fade 1s ease-in-out;
 }

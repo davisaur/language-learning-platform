@@ -318,11 +318,11 @@
                     selectedButton.classList.remove("selected-button");
                     
                     const correctButtons = [selectedButton, btn];
-                    correctButtons[0].classList.add("correct-button");
-                    correctButtons[1].classList.add("correct-button");
+                    correctButtons[0].classList.add("correct-answer");
+                    correctButtons[1].classList.add("correct-answer");
                     setTimeout(() => {
-                        correctButtons[0].classList.remove("correct-button");
-                        correctButtons[1].classList.remove("correct-button");
+                        correctButtons[0].classList.remove("correct-answer");
+                        correctButtons[1].classList.remove("correct-answer");
                     }, 1000);
 
                     btn.disabled = true;
@@ -337,11 +337,11 @@
 
                     // animate red
                     const incorrectButtons = [selectedButton, btn];
-                    incorrectButtons[0].classList.add("incorrect-button");
-                    incorrectButtons[1].classList.add("incorrect-button");
+                    incorrectButtons[0].classList.add("incorrect-answer");
+                    incorrectButtons[1].classList.add("incorrect-answer");
                     setTimeout(() => {
-                        incorrectButtons[0].classList.remove("incorrect-button");
-                        incorrectButtons[1].classList.remove("incorrect-button");
+                        incorrectButtons[0].classList.remove("incorrect-answer");
+                        incorrectButtons[1].classList.remove("incorrect-answer");
                     }, 1000);
                 }
                 selectedButton = null;
