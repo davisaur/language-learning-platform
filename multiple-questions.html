@@ -64,6 +64,7 @@
     <script>
         const questionsIndex = [];
         let currentQuestionIndex = 0;
+        let correctAnswers = 0;
         let selectedButton = null;
 
         // Translation Variables
@@ -191,6 +192,7 @@
             if(currentQuestion.type === "TRANSLATION") {
                 document.querySelector(".translation-container").hidden = false;
                 document.querySelector('#originalText').textContent = currentQuestion.question.sourceText;
+                document.querySelector('#expected-answer').textContent = currentQuestion.question.translatedText;
 
                 const expectedResult = currentQuestion.question.translatedText.split(' ').map(word => word.toLowerCase());
                 const scrambledWordList = expectedResult.slice().sort(() => Math.random() - 0.5);
@@ -258,6 +260,10 @@
                     answerElement.dataset.correct = answer.correct;
                     answerElement.onclick = () => selectWord(answerElement);
                     answersContainer.appendChild(answerElement);
+                    
+                    if(answer.correct) {
+                        document.querySelector('#expected-answer').textContent = answer.text;
+                    }
                 });
             }
         }
@@ -387,6 +393,12 @@
             if (result) {
                 questionsIndex.splice(currentQuestionIndex, 1);
                 document.querySelector('.correct-result').hidden = false;
+                correctAnswers++;
+
+                // Update progress bar
+                const progressBar = document.querySelector('.progress-bar');
+                const progressPercentage = ((correctAnswers / questions.questions.length) * 100).toFixed(2);
+                progressBar.style.width = `${progressPercentage}%`;
             } else {
                 if(currentQuestionIndex <=   questionsIndex.length - 1) {
                     currentQuestionIndex++;
