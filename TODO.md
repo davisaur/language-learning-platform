@@ -1,7 +1,7 @@
 # Web-based Language Learning Platform
 
 ### Lessons
-- [ ] Move JS into seperate file
+- [ ] Move JS into separate file
 
 ### Lesson API
 - [ ] Create Express.js Server
