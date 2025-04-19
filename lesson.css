@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
+:root {
+    --button-color: #ccc;
+    --button-text-color: #666;
+    --selected-color: #6095ec;
+    --disabled-color: #ccc;
+    --incorrect-color: #db6b6b;
+    --correct-color: #7fc776;
+
+}
+
 body {
     font-family: "Quicksand", sans-serif;
     font-weight: 600;
@@ -28,17 +38,17 @@ button {
     margin: 2px;
     padding: 0.5em;
     background-color: #fff;
-    color: #666;
-    border: 2px solid #ccc;
+    color: var(--button-text-color);
+    border: 2px solid var(--button-color);
     border-radius: 8px;
-    box-shadow: #ccc 0px 3px 0px;
+    box-shadow: var(--button-color) 0px 3px 0px;
     cursor: pointer;
 }
 
 button:disabled {
-    color: #eee;
-    border-color: #eee;
-    box-shadow: #eee 0px 3px 0px;
+    color: var(--disabled-color);
+    border-color: var(--disabled-color);
+    box-shadow: var(--disabled-color) 0px 3px 0px;
 
 }
 
@@ -144,7 +154,7 @@ button:disabled {
 }
 
 .incorrect-button {
-    background-color: #db6b6b;
+    background-color: var(--incorrect-color);
     box-shadow: #cc5151 0px 3px 0px;
 }
 
@@ -174,4 +184,76 @@ button:disabled {
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+/* Word Matching Activity Styles */
+
+
+.matching-column-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+.left-matching-container {
+    width: 100%;
+    vertical-align: middle;
+    padding-right: 0.5em;
+}
+
+.right-matching-container {
+    width: 100%;
+    vertical-align: middle;
+    padding-left: 0.5em;
+}
+
+.matching-button {
+    width: 100%;
+    margin: 0.5em 0;
+    height: 4em;
+}
+
+.selected-button {
+    color: var(--selected-color);
+    border-color: var(--selected-color);
+    box-shadow: var(--selected-color) 0px 3px 0px;
+    background-color: #fff;
+}
+
+@keyframes incorrect-fade {
+    0% {
+        color: var(--incorrect-color);
+        border-color: var(--incorrect-color);
+        box-shadow: var(--incorrect-color) 0px 3px 0px;
+    }
+    100% {
+        color: var(--button-text-color);
+        border-color: var(--button-color);
+        box-shadow: var(--button-color) 0px 3px 0px;
+    }
+}
+
+.incorrect-button {
+    background-color: #fff;
+    animation: incorrect-fade 1s ease-in-out;
+}
+
+@keyframes correct-fade {
+    0% {
+        color: var(--correct-color);
+        border-color: var(--correct-color);
+        box-shadow: var(--correct-color) 0px 3px 0px;
+    }
+    100% {
+        color: var(--disabled-color);
+        border-color: var(--disabled-color);
+        box-shadow: var(--disabled-color) 0px 3px 0px;
+    }
+}
+
+.correct-button {
+    background-color: #fff;
+    animation: correct-fade 1s ease-in-out;
 }

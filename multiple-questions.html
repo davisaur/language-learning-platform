@@ -19,6 +19,7 @@
     </div>
 
     <div class="word-matching-container" hidden>
+        <h2>Match the words</h2>
         <div class="matching-column-container">
             <div class="left-matching-container">
 
@@ -213,7 +214,7 @@
 
                 pairs.forEach((pair, index) => {
                     const sourceButton = document.createElement("button");
-                    sourceButton.className = "button";
+                    sourceButton.className = "matching-button";
                     sourceButton.innerText = pair.source;
                     sourceButton.dataset.type = "source";
                     sourceButton.dataset.pair = index;
@@ -221,7 +222,7 @@
                     leftMatchingContainer.appendChild(sourceButton);
 
                     const translationButton = document.createElement("button");
-                    translationButton.className = "button";
+                    translationButton.className = "matching-button";
                     translationButton.innerText = pair.translation;
                     translationButton.dataset.type = "translation";
                     translationButton.dataset.pair = index;
@@ -305,29 +306,43 @@
             if(!selectedButton || selectedButton.dataset.type === btn.dataset.type) {
                 if(selectedButton !== null) {
                     selectedButton.disabled = false;
-                    selectedButton.classList.remove("selected");
+                    selectedButton.classList.remove("selected-button");
                 }
                 selectedButton = btn;
                 
                 // disable button
-                btn.classList.add("selected");
+                btn.classList.add("selected-button");
 
             } else {
                 if(selectedButton.dataset.pair === btn.dataset.pair) {
-                    selectedButton.classList.remove("selected");
+                    selectedButton.classList.remove("selected-button");
                     
-                    btn.disabled = true;
-                    btn.classList.add("correct");
+                    const correctButtons = [selectedButton, btn];
+                    correctButtons[0].classList.add("correct-button");
+                    correctButtons[1].classList.add("correct-button");
+                    setTimeout(() => {
+                        correctButtons[0].classList.remove("correct-button");
+                        correctButtons[1].classList.remove("correct-button");
+                    }, 1000);
 
+                    btn.disabled = true;
                     selectedButton.disabled = true;
-                    selectedButton.classList.add("correct");
                     pairsCount--;
                     if(pairsCount === 0) {
                         showResult(true);
                     }
                 } else {
                     // Incorrect match
-                    selectedButton.classList.remove("selected");
+                    selectedButton.classList.remove("selected-button");
+
+                    // animate red
+                    const incorrectButtons = [selectedButton, btn];
+                    incorrectButtons[0].classList.add("incorrect-button");
+                    incorrectButtons[1].classList.add("incorrect-button");
+                    setTimeout(() => {
+                        incorrectButtons[0].classList.remove("incorrect-button");
+                        incorrectButtons[1].classList.remove("incorrect-button");
+                    }, 1000);
                 }
                 selectedButton = null;
                 console.log("Selected button: ", selectedButton);
@@ -337,12 +352,12 @@
         function selectWord(btn) {
             if(selectedButton !== null) {
                 selectedButton.disabled = false;
-                selectedButton.classList.remove("selected");
+                selectedButton.classList.remove("selected-button");
             }
             selectedButton = btn;
             
             // disable  
-            btn.classList.add("selected");
+            btn.classList.add("selected-button");
             submitButton.disabled = false;
         }
 
