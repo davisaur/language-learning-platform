@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON I/O</title>
+</head>
+<body>
+    <h1>JSON I/O</h1>
+    <form id="greet-form" action="/api/greet" method="POST">
+        <label for="name">Name: </label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Submit</button>
+
+        <div id="greeting-result">
+
+        </div>
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const greetingForm = document.getElementById('greet-form');
+            const greetingResult = document.getElementById('greeting-result');
+
+            greetingForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the form from submitting the traditional way
+
+                const formData = new FormData(greetingForm);
+                const name = formData.get('name');
+
+                fetch('/api/greet', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    greetingResult.innerHTML = `<p>${data.text}</p>`;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

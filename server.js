@@ -4,6 +4,10 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
@@ -12,6 +16,20 @@ app.get('/', (req, res) => {
 
 app.get('/lesson', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'lesson.html'));
+});
+
+app.get('/greet', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'greet.html'));
+});
+
+app.post('/api/greet', (req, res) => {
+    const name = req.body.name;
+    if (!name) {
+        return res.status(400).json({ error: 'Name is required' });
+    }
+    const jsonResponse = { "text": `Hello ${name}!` };
+
+    res.json(jsonResponse);
 });
 
 app.listen(PORT, () => {
