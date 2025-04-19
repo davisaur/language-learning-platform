@@ -23,10 +23,10 @@ Here's how each activity is written out as an object:
     "type": "MATCH_THE_WORDS",
     "question": {
         "pairs": [
-            { source: "hello", translation: "hola" },
-            { source: "house", translation: "casa" },
-            { source: "eyes", translation: "ojos" },
-            { source: "library", translation: "biblioteca" }
+            { "source": "hello", "translation": "hola" },
+            { "source": "house", "translation": "casa" },
+            { "source": "eyes", "translation": "ojos" },
+            { "source": "library", "translation": "biblioteca" }
         ]
     } 
 }
