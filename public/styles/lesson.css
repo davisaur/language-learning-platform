@@ -1,0 +1,272 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
+:root {
+    --button-color: #ccc;
+    --button-text-color: #666;
+    --selected-color: #6095ec;
+    --disabled-color: #eee;
+    --incorrect-color: #db6b6b;
+    --correct-color: #7fc776;
+
+}
+
+body {
+    font-family: "Quicksand", sans-serif;
+    font-weight: 600;
+    margin: 10px;
+}
+
+/* General Elements Styles */
+
+h2 {
+    font-size: 1.8;
+    font-weight: 800;
+    font-weight: extra-bold;
+    color: #333;
+}
+
+p {
+    font-size: 1em;
+    color: #555;
+}
+
+button {
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 1em;
+    height: 2.5em;
+    margin: 2px;
+    padding: 0.5em;
+    background-color: #fff;
+    color: var(--button-text-color);
+    border: 2px solid var(--button-color);
+    border-radius: 8px;
+    box-shadow: var(--button-color) 0px 3px 0px;
+    cursor: pointer;
+}
+
+button:disabled {
+    color: var(--disabled-color);
+    border-color: var(--disabled-color);
+    box-shadow: var(--disabled-color) 0px 3px 0px;
+
+}
+
+/* Progress Bar */
+
+.progress-bar-container {
+    width: calc(100% - 40px);
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin: 20px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: #7fc776;
+    border-radius: 5px;
+}
+
+/* Submit Button Styles */
+
+.submit-container {
+    position: absolute;
+    bottom: 10px;
+    width: calc(100% - 20px);
+}
+
+.continue-button {
+    width: 100%;
+    height: 3em;
+    background-color: #7fc776;
+    color: #fff;
+    border: 0px;
+    box-shadow: #68a65f 0px 3px 0px; 
+    margin-top: 1em;
+}
+
+.continue-button:disabled {
+    background-color: #c0c0c0;
+    box-shadow: #838383 0px 3px 0px;
+    cursor: not-allowed;
+}
+
+/* Result Styles */
+
+@keyframes pop-in-from-bottom {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframe fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.overlay-result-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    background-color: rgba(0, 0, 0, 0.1);
+    animation: fade-in 0.25s cubic-bezier(0,0,0,1);
+}
+
+.inner-result-container {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    box-shadow: #ccc 0px 0px 24px;
+    animation: pop-in-from-bottom 0.25s cubic-bezier(0,0,0,1);
+}
+
+.result {
+    height: 100%;
+    padding: 10px;
+    background-color: #eee;
+}
+
+.result-text {
+    margin: 6px 0px;
+}
+
+.correct-result {
+    color: #7fc776;
+}
+
+.incorrect-result {
+    margin: 0;
+    color: #db6b6b;
+}
+
+.incorrect-button {
+    color: #fff;;
+    background-color: var(--incorrect-color);
+    box-shadow: #cc5151 0px 3px 0px;
+}
+
+.expected-answer-title {
+    margin: 0;
+}
+
+#expected-answer {
+    margin: 0;
+    color: #db6b6b;
+}
+
+/* Translation Activity Styles */
+
+#translated-word-list {
+    width: 100%;   
+    height: 3em;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-bottom: #ccc solid 2px;
+    border-top: #ccc solid 2px;
+}
+
+#source-word-list {
+    width: 100%;;
+    margin-top: 1em;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Word Matching Activity Styles */
+
+
+.matching-column-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+}
+
+.left-matching-container {
+    width: 100%;
+    vertical-align: middle;
+    padding-right: 0.5em;
+}
+
+.right-matching-container {
+    width: 100%;
+    vertical-align: middle;
+    padding-left: 0.5em;
+}
+
+.matching-button {
+    width: 100%;
+    margin: 0.5em 0;
+    height: 4em;
+}
+
+.selected-button {
+    color: var(--selected-color);
+    border-color: var(--selected-color);
+    box-shadow: var(--selected-color) 0px 3px 0px;
+    background-color: #fff;
+}
+
+@keyframes incorrect-fade {
+    0% {
+        color: var(--incorrect-color);
+        border-color: var(--incorrect-color);
+        box-shadow: var(--incorrect-color) 0px 3px 0px;
+    }
+    100% {
+        color: var(--button-text-color);
+        border-color: var(--button-color);
+        box-shadow: var(--button-color) 0px 3px 0px;
+    }
+}
+
+.incorrect-answer {
+    background-color: #fff;
+    animation: incorrect-fade 1s ease-in-out;
+}
+
+@keyframes correct-fade {
+    0% {
+        color: var(--correct-color);
+        border-color: var(--correct-color);
+        box-shadow: var(--correct-color) 0px 3px 0px;
+    }
+    100% {
+        color: var(--disabled-color);
+        border-color: var(--disabled-color);
+        box-shadow: var(--disabled-color) 0px 3px 0px;
+    }
+}
+
+.correct-answer {
+    background-color: #fff;
+    animation: correct-fade 1s ease-in-out;
+}
+
+/* Multiple Choice Activity Styles */
+
+.multiple-choice-answers {
+    margin-top: 3em;
+}
+
+.multiple-choice-button {
+    width: 100%;
+    margin: 0.4em 0;
+    height: 3em;
+}

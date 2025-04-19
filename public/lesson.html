@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple Questions</title>
+    <link rel="stylesheet" href="styles/lesson.css">
+ </head>
+<body>
+    <div class="progress-bar-container">
+        <div class="progress-bar"> </div>
+    </div>
+    <div class="translation-container" hidden>
+        <h2>Translate the following sentence</h2>
+        <p id="originalText"></p>
+        <div id="translated-word-list"> </div>
+        <div id="source-word-list"></div>
+    </div>
+
+    <div class="word-matching-container" hidden>
+        <h2>Match the words</h2>
+        <div class="matching-column-container">
+            <div class="left-matching-container">
+
+            </div>
+            <div class="right-matching-container">
+
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="multiple-choice-container" hidden>
+        <div class="question-container">
+            <h2 class="matching-question-text"></h2>
+        </div>
+        <div class="multiple-choice-answers">
+
+        </div>
+    </div>
+
+    <div class="submit-container">
+        <button id="submit-button" class="continue-button" onclick="checkResult();" disabled>Submit</button>
+    </div>
+
+    <div class="overlay-result-container" hidden>
+        <div class="inner-result-container">
+            <div class="correct-result result" hidden>
+                <h1 class="result-text">Perfect!</h1>
+                <div class="continue-button-container">
+                    <button class="continue-button" onclick="nextQuestion();">Continue</button>
+                </div>
+            </div>
+            <div class="incorrect-result result" hidden="true">
+                <h1 class="result-text">Zoinks, Scoob!</h1>
+                <h3 class="expected-answer-title">Correct answer:</h3>
+                <p id="expected-answer">expectedAnswer</p>
+                <button class="continue-button incorrect-button" onclick="nextQuestion();">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questionsIndex = [];
+        let currentQuestionIndex = 0;
+        let correctAnswers = 0;
+        let selectedButton = null;
+
+        // Translation Variables
+        const sourceWordList = document.querySelector('#source-word-list');
+        const translatedWordList = document.querySelector('#translated-word-list');
+
+        // Word Matching Variables
+        let pairsCount = 0;
+
+        // Multiple Choice Variables
+        const submitButton = document.getElementById('submit-button');
+
+        const questions = {
+            "questions": [
+                {
+                "type": "TRANSLATION",
+                "question": {
+                    "sourceText": "I would like a coffee, please",
+                    "translatedText": "Me gustaría un café, por favor"
+                }
+                },
+                {
+                "type": "MATCH_THE_WORDS",
+                "question": {
+                    "pairs": [
+                    { "source": "water", "translation": "agua" },
+                    { "source": "menu", "translation": "menú" },
+                    { "source": "waiter", "translation": "camarero" },
+                    { "source": "bill", "translation": "cuenta" }
+                    ]
+                }
+                },
+                {
+                "type": "MULTIPLE_CHOICE",
+                "question": {
+                    "question": "How do you say 'I am hungry' in Spanish?",
+                    "answers": [
+                    { "text": "Tengo hambre", "correct": true },
+                    { "text": "Estoy sediento", "correct": false },
+                    { "text": "Quiero comida", "correct": false },
+                    { "text": "Necesito agua", "correct": false }
+                    ]
+                }
+                },
+                {
+                "type": "TRANSLATION",
+                "question": {
+                    "sourceText": "Can I see the menu?",
+                    "translatedText": "¿Puedo ver el menú?"
+                }
+                },
+                {
+                "type": "MATCH_THE_WORDS",
+                "question": {
+                    "pairs": [
+                    { "source": "fork", "translation": "tenedor" },
+                    { "source": "knife", "translation": "cuchillo" },
+                    { "source": "spoon", "translation": "cuchara" },
+                    { "source": "napkin", "translation": "servilleta" }
+                    ]
+                }
+                },
+                {
+                "type": "MULTIPLE_CHOICE",
+                "question": {
+                    "question": "What is the Spanish word for 'chicken'?",
+                    "answers": [
+                    { "text": "pollo", "correct": true },
+                    { "text": "pescado", "correct": false },
+                    { "text": "carne", "correct": false },
+                    { "text": "pan", "correct": false }
+                    ]
+                }
+                },
+                {
+                "type": "TRANSLATION",
+                "question": {
+                    "sourceText": "The food is delicious",
+                    "translatedText": "La comida está deliciosa"
+                }
+                },
+                {
+                "type": "MULTIPLE_CHOICE",
+                "question": {
+                    "question": "How do you say 'check, please' in Spanish?",
+                    "answers": [
+                    { "text": "La cuenta, por favor", "correct": true },
+                    { "text": "El menú, por favor", "correct": false },
+                    { "text": "La carta, por favor", "correct": false },
+                    { "text": "La comida, por favor", "correct": false }
+                    ]
+                }
+                },
+                {
+                "type": "TRANSLATION",
+                "question": {
+                    "sourceText": "Do you have vegetarian options?",
+                    "translatedText": "¿Tiene opciones vegetarianas?"
+                }
+                },
+                {
+                "type": "MATCH_THE_WORDS",
+                "question": {
+                    "pairs": [
+                    { "source": "table", "translation": "mesa" },
+                    { "source": "drink", "translation": "bebida" },
+                    { "source": "reservation", "translation": "reserva" },
+                    { "source": "dish", "translation": "plato" }
+                    ]
+                }
+                }
+            ]
+        }
+
+        // Initialize the question index
+        for (let i = 0; i < questions.questions.length; i++) {
+            questionsIndex.push(i);
+        }
+
+        let currentQuestion = questions.questions[questionsIndex[currentQuestionIndex]];
+
+        processQuestion();
+
+        function processQuestion() {
+            if(currentQuestion.type === "TRANSLATION") {
+                document.querySelector(".translation-container").hidden = false;
+                document.querySelector('#originalText').textContent = currentQuestion.question.sourceText;
+                document.querySelector('#expected-answer').textContent = currentQuestion.question.translatedText;
+
+                const expectedResult = currentQuestion.question.translatedText.split(' ').map(word => word.toLowerCase());
+                const scrambledWordList = expectedResult.slice().sort(() => Math.random() - 0.5);
+
+                for (const word of scrambledWordList) {
+                    const button = document.createElement('button');
+                    button.className = 'button';
+                    button.textContent = word;
+                    button.dataset.word = word.toLowerCase();
+                    button.onclick = function () {
+                    addToTranslation(button);
+                    };
+                    sourceWordList.appendChild(button);
+                }
+            } else if (currentQuestion.type === "MATCH_THE_WORDS") {
+                document.querySelector(".word-matching-container").hidden = false;
+                const leftMatchingContainer = document.querySelector(".left-matching-container");
+                const rightMatchingContainer = document.querySelector(".right-matching-container");
+
+                const pairs = currentQuestion.question.pairs;
+
+                pairs.forEach((pair, index) => {
+                    const sourceButton = document.createElement("button");
+                    sourceButton.className = "matching-button";
+                    sourceButton.innerText = pair.source;
+                    sourceButton.dataset.type = "source";
+                    sourceButton.dataset.pair = index;
+                    sourceButton.onclick = () => selectMatchingWord(sourceButton);
+                    leftMatchingContainer.appendChild(sourceButton);
+
+                    const translationButton = document.createElement("button");
+                    translationButton.className = "matching-button";
+                    translationButton.innerText = pair.translation;
+                    translationButton.dataset.type = "translation";
+                    translationButton.dataset.pair = index;
+                    translationButton.onclick = () => selectMatchingWord(translationButton);
+                    rightMatchingContainer.appendChild(translationButton);
+                    
+                    pairsCount++;
+                });
+
+                // Randomize buttons
+                const leftButtons = Array.from(leftMatchingContainer.children);
+                const rightButtons = Array.from(rightMatchingContainer.children);
+                leftButtons.sort(() => Math.random() - 0.5);
+                rightButtons.sort(() => Math.random() - 0.5);
+                leftButtons.forEach(button => leftMatchingContainer.appendChild(button));
+                rightButtons.forEach(button => rightMatchingContainer.appendChild(button));
+
+
+            } else if (currentQuestion.type === "MULTIPLE_CHOICE") {
+                document.querySelector(".multiple-choice-container").hidden = false;
+
+                
+                const questionContainer = document.querySelector('.question-container');
+                const answersContainer = document.querySelector('.multiple-choice-answers');
+
+                document.querySelector('.matching-question-text').textContent = currentQuestion.question.question;
+
+                // Create answer elements
+                currentQuestion.question.answers.forEach(answer => {
+                    const answerElement = document.createElement('button');
+                    answerElement.classList.add('multiple-choice-button');
+                    answerElement.textContent = answer.text;
+                    answerElement.dataset.correct = answer.correct;
+                    answerElement.onclick = () => selectWord(answerElement);
+                    answersContainer.appendChild(answerElement);
+                    
+                    if(answer.correct) {
+                        document.querySelector('#expected-answer').textContent = answer.text;
+                    }
+                });
+            }
+        }
+
+        function addToTranslation(button) {
+            // Add to right column without removing from left column
+            const newButton = document.createElement('button');
+            newButton.className = 'button';
+            newButton.textContent = button.textContent;
+            newButton.dataset.word = button.dataset.word;
+            newButton.onclick = function () {
+            removeFromTranslation(newButton);
+            };
+            translatedWordList.appendChild(newButton);
+
+            // add class to the button
+            button.classList.add('added-button');
+            button.disabled = true;
+
+            if(submitButton.disabled) {
+                submitButton.disabled = false;
+            }
+        }
+
+        function removeFromTranslation(button) {
+            // Remove from right column
+            translatedWordList.removeChild(button);
+
+            // Enable the original button in the left column
+            const originalButtons = sourceWordList.querySelectorAll(`[data-word="${button.dataset.word}"]`);
+            for (const originalButton of originalButtons) {
+                if (originalButton.disabled) {
+                    originalButton.disabled = false;
+                    originalButton.classList.remove('added-button');
+                    break;
+                }
+            }
+
+            if(translatedWordList.children.length === 0) {
+                submitButton.disabled = true;
+            }
+            
+        }
+
+        function selectMatchingWord(btn) {
+            if(!selectedButton || selectedButton.dataset.type === btn.dataset.type) {
+                if(selectedButton !== null) {
+                    selectedButton.disabled = false;
+                    selectedButton.classList.remove("selected-button");
+                }
+                selectedButton = btn;
+                
+                // disable button
+                btn.classList.add("selected-button");
+
+            } else {
+                if(selectedButton.dataset.pair === btn.dataset.pair) {
+                    selectedButton.classList.remove("selected-button");
+                    
+                    const correctButtons = [selectedButton, btn];
+                    correctButtons[0].classList.add("correct-answer");
+                    correctButtons[1].classList.add("correct-answer");
+                    setTimeout(() => {
+                        correctButtons[0].classList.remove("correct-answer");
+                        correctButtons[1].classList.remove("correct-answer");
+                    }, 1000);
+
+                    btn.disabled = true;
+                    selectedButton.disabled = true;
+                    pairsCount--;
+                    if(pairsCount === 0) {
+                        showResult(true);
+                    }
+                } else {
+                    // Incorrect match
+                    selectedButton.classList.remove("selected-button");
+
+                    // animate red
+                    const incorrectButtons = [selectedButton, btn];
+                    incorrectButtons[0].classList.add("incorrect-answer");
+                    incorrectButtons[1].classList.add("incorrect-answer");
+                    setTimeout(() => {
+                        incorrectButtons[0].classList.remove("incorrect-answer");
+                        incorrectButtons[1].classList.remove("incorrect-answer");
+                    }, 1000);
+                }
+                selectedButton = null;
+                console.log("Selected button: ", selectedButton);
+            }
+        }
+
+        function selectWord(btn) {
+            if(selectedButton !== null) {
+                selectedButton.disabled = false;
+                selectedButton.classList.remove("selected-button");
+            }
+            selectedButton = btn;
+            
+            // disable  
+            btn.classList.add("selected-button");
+            submitButton.disabled = false;
+        }
+
+        function checkResult() {
+            if(currentQuestion.type === "TRANSLATION") {
+                const expectedResult = currentQuestion.question.translatedText.split(' ').map(word => word.toLowerCase());
+                const selectedWords = Array.from(translatedWordList.querySelectorAll('.button')).map(button => button.dataset.word);
+                const isCorrect = expectedResult.length === selectedWords.length && expectedResult.every((word, index) => word === selectedWords[index]);
+                
+                if(isCorrect) {
+                    showResult(true);
+                } else {
+                    showResult(false);
+                }
+            } else if(currentQuestion.type === "MULTIPLE_CHOICE") {
+                if(selectedButton.dataset.correct === "true") {
+                    showResult(true);
+                } else {
+                    showResult(false);
+                }
+            }
+            
+        }
+
+        function showResult(result) {
+            document.querySelector('.overlay-result-container').hidden = false;
+            if (result) {
+                questionsIndex.splice(currentQuestionIndex, 1);
+                document.querySelector('.correct-result').hidden = false;
+                correctAnswers++;
+
+                // Update progress bar
+                const progressBar = document.querySelector('.progress-bar');
+                const progressPercentage = ((correctAnswers / questions.questions.length) * 100).toFixed(2);
+                progressBar.style.width = `${progressPercentage}%`;
+            } else {
+                if(currentQuestionIndex <=   questionsIndex.length - 1) {
+                    currentQuestionIndex++;
+                }
+                document.querySelector('.incorrect-result').hidden = false;
+            }
+            if(currentQuestionIndex > questionsIndex.length - 1) {
+                if(questionsIndex.length > 0) {
+                    currentQuestionIndex = 0;
+                } else {
+                    document.querySelector('.overlay-result-container').hidden = true;
+                    alert("Lesson Complete!");  
+                }
+            }
+            console.log("Current question index: ", currentQuestionIndex);
+            console.log("Questions index: ", questionsIndex);
+
+        }
+
+        function nextQuestion() {
+            currentQuestion = questions.questions[questionsIndex[currentQuestionIndex]];
+            // clear previous question and answers
+            sourceWordList.innerHTML = '';
+            translatedWordList.innerHTML = '';
+            document.querySelector('.left-matching-container').innerHTML = '';
+            document.querySelector('.right-matching-container').innerHTML = '';
+            document.querySelector('.multiple-choice-answers').innerHTML = '';
+            submitButton.disabled = true;
+            selectedButton = null;
+            pairsCount = 0;
+
+            // hide the result overlay
+            document.querySelector('.overlay-result-container').hidden = true;
+            document.querySelector('.correct-result').hidden = true;
+            document.querySelector('.incorrect-result').hidden = true;
+
+            // hide all containers
+            document.querySelector(".translation-container").hidden = true;
+            document.querySelector(".word-matching-container").hidden = true;
+            document.querySelector(".multiple-choice-container").hidden = true;
+
+            // process next question
+            processQuestion();
+            
+        }
+    </script>
+</body>
+</html>
