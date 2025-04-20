@@ -6,6 +6,7 @@
 - [ ] Go to '/' homepage upon finishing a lesson
 - [ ] Create lesson completion screen, showing accuracy + time taken
 - [ ] When the user gets questions wrong, when they reappear, have a little screen popup
+- [ ] Optimize style for desktop
 
 ### Lesson Creation
 - [ ] Fix styling
