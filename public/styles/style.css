@@ -75,7 +75,7 @@ input::placeholder {
 
 /* Submit Button Styles */
 
-.submit-container {
+.submit-container { 
     position: absolute;
     bottom: 10px;
     width: calc(100% - 20px);
