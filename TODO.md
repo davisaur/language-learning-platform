@@ -7,6 +7,7 @@
 - [ ] Create lesson completion screen, showing accuracy + time taken
 - [ ] When the user gets questions wrong, when they reappear, have a little screen popup
 - [ ] Optimize style for desktop
+- [ ] Remove punctuation in translation tasks
 
 ### Lesson Creation
 - [ ] Fix styling
@@ -21,5 +22,7 @@
 - [ ] save in file/database
 - [ ] Serve the user said file.
 - [ ] Update prompt to not show random trivia in Full English
+- [ ] Translation, seperate non-english words
+- [ ] Translation, add extra words
 
 
