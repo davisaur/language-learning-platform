@@ -96,3 +96,5 @@ input::placeholder {
     box-shadow: #838383 0px 3px 0px;
     cursor: not-allowed;
 }
+
+audio { display:none;}

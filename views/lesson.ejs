@@ -11,6 +11,10 @@
     <div class="progress-bar-container">
         <div class="progress-bar"> </div>
     </div>
+    <audio id="correct-sound" src="/audio/duolingo_correct.wav" type="audio/wav" ></audio>
+    <audio id="incorrect-sound" src="/audio/duolingo_wrong.wav" type="audio/wav"></audio>
+    <audio id="complete-sound" src="/audio/duolingo_complete.wav" type="audio/wav"></audio>
+
     <div class="translation-container" hidden>
         <h2>Translate the following sentence</h2>
         <p id="originalText"></p>
@@ -295,6 +299,12 @@
                 document.querySelector('.correct-result').hidden = false;
                 correctAnswers++;
 
+                // Play correct sound
+                const correctSound = document.getElementById('correct-sound');
+                correctSound.currentTime = 0; // Reset sound to start
+                correctSound.volume = 0.5; // Set volume to 50%
+                correctSound.play();
+
                 // Update progress bar
                 const progressBar = document.querySelector('.progress-bar');
                 const progressPercentage = ((correctAnswers / questions.questions.length) * 100).toFixed(2);
@@ -304,12 +314,25 @@
                     currentQuestionIndex++;
                 }
                 document.querySelector('.incorrect-result').hidden = false;
+
+                // Play incorrect sound
+                const incorrectSound = document.getElementById('incorrect-sound');
+                incorrectSound.currentTime = 0; // Reset sound to start
+                incorrectSound.volume = 0.5; // Set volume to 50%
+                incorrectSound.play();
             }
             if(currentQuestionIndex > questionsIndex.length - 1) {
                 if(questionsIndex.length > 0) {
                     currentQuestionIndex = 0;
                 } else {
                     document.querySelector('.overlay-result-container').hidden = true;
+                    
+                    // Play complete sound
+                    const completeSound = document.getElementById('complete-sound');
+                    completeSound.currentTime = 0; // Reset sound to start
+                    completeSound.volume = 0.5; // Set volume to 50%
+                    completeSound.play();
+
                     alert("Lesson Complete!");  
                 }
             }
