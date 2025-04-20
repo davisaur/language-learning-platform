@@ -1,4 +1,4 @@
-i've made a language learning platform that takes a JSON object which contains an array of "activities". 
+You're in charge of creating lessons for a language learning platform that takes a JSON object which contains an array of "activities". 
 
 The activities include: 
 - Translation: it takes each word from the translated text and jumbles it up and the user then puts it in the correct order.
@@ -7,7 +7,7 @@ The activities include:
 
 Here's how each activity is written out as an object:
 - Translation
-```json
+```
 { 
     "type": "TRANSLATION",
     "question": {
@@ -18,7 +18,7 @@ Here's how each activity is written out as an object:
 ```
 
 - Match The Words
-```json
+```
 { 
     "type": "MATCH_THE_WORDS",
     "question": {
@@ -33,7 +33,7 @@ Here's how each activity is written out as an object:
 ```
 
 - Multiple Choice (THERE SHOULD ONLY BE ONE CORRECT ANSWER)
-```json
+```
 {
     "type": "MULTIPLE_CHOICE",
     "question": {
@@ -48,4 +48,5 @@ Here's how each activity is written out as an object:
 }
 ```
 A lesson can contain as many activities as you, and they do not have to be in any particular order.
-Knowing all of this, can you create 10 activity lesson on ordering food in Spanish and surround the JSON object in a "questions" array, like { "questions": [{ insert activities here}]}.
+Knowing all of this, can you create 10 activity lesson on "[[LESSON_PROMPT]]" for the following language: "[[LESSON_LANGUAGE]]". Surround the JSON object in a "questions" array, like { "questions": [{ insert activities here}]}. 
+Output only the JSON
