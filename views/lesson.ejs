@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multiple Questions</title>
-    <link rel="stylesheet" href="styles/lesson.css">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/lesson.css">
  </head>
 <body>
     <div class="progress-bar-container">
@@ -65,6 +66,7 @@
         let currentQuestionIndex = 0;
         let correctAnswers = 0;
         let selectedButton = null;
+        let currentQuestion;
 
         // Translation Variables
         const sourceWordList = document.querySelector('#source-word-list');
@@ -75,117 +77,16 @@
 
         // Multiple Choice Variables
         const submitButton = document.getElementById('submit-button');
+        const questions = <%- questions %>;
 
-        const questions = {
-            "questions": [
-                {
-                "type": "TRANSLATION",
-                "question": {
-                    "sourceText": "I would like a coffee, please",
-                    "translatedText": "Me gustaría un café, por favor"
-                }
-                },
-                {
-                "type": "MATCH_THE_WORDS",
-                "question": {
-                    "pairs": [
-                    { "source": "water", "translation": "agua" },
-                    { "source": "menu", "translation": "menú" },
-                    { "source": "waiter", "translation": "camarero" },
-                    { "source": "bill", "translation": "cuenta" }
-                    ]
-                }
-                },
-                {
-                "type": "MULTIPLE_CHOICE",
-                "question": {
-                    "question": "How do you say 'I am hungry' in Spanish?",
-                    "answers": [
-                    { "text": "Tengo hambre", "correct": true },
-                    { "text": "Estoy sediento", "correct": false },
-                    { "text": "Quiero comida", "correct": false },
-                    { "text": "Necesito agua", "correct": false }
-                    ]
-                }
-                },
-                {
-                "type": "TRANSLATION",
-                "question": {
-                    "sourceText": "Can I see the menu?",
-                    "translatedText": "¿Puedo ver el menú?"
-                }
-                },
-                {
-                "type": "MATCH_THE_WORDS",
-                "question": {
-                    "pairs": [
-                    { "source": "fork", "translation": "tenedor" },
-                    { "source": "knife", "translation": "cuchillo" },
-                    { "source": "spoon", "translation": "cuchara" },
-                    { "source": "napkin", "translation": "servilleta" }
-                    ]
-                }
-                },
-                {
-                "type": "MULTIPLE_CHOICE",
-                "question": {
-                    "question": "What is the Spanish word for 'chicken'?",
-                    "answers": [
-                    { "text": "pollo", "correct": true },
-                    { "text": "pescado", "correct": false },
-                    { "text": "carne", "correct": false },
-                    { "text": "pan", "correct": false }
-                    ]
-                }
-                },
-                {
-                "type": "TRANSLATION",
-                "question": {
-                    "sourceText": "The food is delicious",
-                    "translatedText": "La comida está deliciosa"
-                }
-                },
-                {
-                "type": "MULTIPLE_CHOICE",
-                "question": {
-                    "question": "How do you say 'check, please' in Spanish?",
-                    "answers": [
-                    { "text": "La cuenta, por favor", "correct": true },
-                    { "text": "El menú, por favor", "correct": false },
-                    { "text": "La carta, por favor", "correct": false },
-                    { "text": "La comida, por favor", "correct": false }
-                    ]
-                }
-                },
-                {
-                "type": "TRANSLATION",
-                "question": {
-                    "sourceText": "Do you have vegetarian options?",
-                    "translatedText": "¿Tiene opciones vegetarianas?"
-                }
-                },
-                {
-                "type": "MATCH_THE_WORDS",
-                "question": {
-                    "pairs": [
-                    { "source": "table", "translation": "mesa" },
-                    { "source": "drink", "translation": "bebida" },
-                    { "source": "reservation", "translation": "reserva" },
-                    { "source": "dish", "translation": "plato" }
-                    ]
-                }
-                }
-            ]
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            for (let i = 0; i < questions.questions.length; i++) {
+                questionsIndex.push(i);
+            }
 
-        // Initialize the question index
-        for (let i = 0; i < questions.questions.length; i++) {
-            questionsIndex.push(i);
-        }
-
-        let currentQuestion = questions.questions[questionsIndex[currentQuestionIndex]];
-
-        processQuestion();
+            currentQuestion = questions.questions[questionsIndex[currentQuestionIndex]];
+            processQuestion();
+        });        
 
         function processQuestion() {
             if(currentQuestion.type === "TRANSLATION") {

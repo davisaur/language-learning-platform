@@ -2,6 +2,8 @@
 const express = require('express');
 const path = require('path');
 const aiModel = require('@google/genai');
+const fs = require('fs');
+
 require('dotenv').config();
 
 const app = express();
@@ -13,21 +15,14 @@ if (!process.env.GEMINI_API_KEY) {
     process.exit(1);
 }
 
-// Initialize Google GenAI client
-const ai = new aiModel.GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-});
+// --- Express Middleware ---
 
-// Function to generate a greeting message
-async function generateGreeting(name) {
-    const prompt = `Generate a friendly and creative greeting message for ${name}. Only respond with the greeting message.`;
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
-        temperature: 1,
-        contents: prompt
-    });
-    return response.text;
-}
+// Set up EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Middleware to parse URL-encoded bodies (form data)
+app.use(express.urlencoded({ extended: true }));
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -35,34 +30,53 @@ app.use(express.json());
 // Middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// --- Google GenAI Client Initialization ---
+
+// Initialize Google GenAI client
+const ai = new aiModel.GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY,
+});
+
+// Function to generate a greeting message
+async function generateLesson(userPrompt, language) {
+    const prompt = lessonPrompt.replace('[[LESSON_LANGUAGE]]', language).replace('[[LESSON_PROMPT]]', userPrompt);
+    const response = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: prompt
+    });
+    return response.text;
+}
+
+// --- Loading prompt template ---
+const lessonPromptPath = path.join(__dirname, 'prompts', 'create-lesson.txt');
+const lessonPrompt = fs.readFileSync(lessonPromptPath, 'utf8');
+
+// --- Routes ---
+
 app.get('/', (req, res) => {
-    res.send('Welcome to the Language Learning App!');
+    res.render('create');
+
 });
 
-app.get('/lesson', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'lesson.html'));
-});
-
-app.get('/greet', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'greet.html'));
-});
-
-app.post('/api/greet', (req, res) => {
-    const name = req.body.name;
-    if (!name) {
-        return res.status(400).json({ error: 'Name is required' });
+app.post('/api/create', (req, res) => {
+    const prompt = req.body.prompt;
+    const language = req.body.language;
+    if (!prompt || !language) {
+        return res.status(400).json({ error: 'Prompt and Language selection required' });
     }
     
-    generateGreeting(name)
-        .then(greeting => {
-            const jsonResponse = {
-                text: greeting
-            };
-            res.json(jsonResponse);
+    generateLesson(prompt, language)
+        .then(lesson => {
+            //remove backticks
+            lesson = lesson.replace(/`/g, '');
+            //remove word  'json' from first line
+            lesson = lesson.replace(/json/g, '');
+
+            res.render('lesson', { questions: lesson });
         })
         .catch(err => {
-            console.error('Error generating greeting:', err);
-            res.status(500).json({ error: 'Failed to generate greeting' });
+            console.error('Error generating lesson:', err);
+            res.status(500).json({ error: 'Failed to generate lesson' });
         });
 });
 

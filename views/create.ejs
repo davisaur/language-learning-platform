@@ -4,31 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JSON I/O</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <style>
+        body {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>JSON I/O</h1>
-    <form id="greet-form" action="/api/greet" method="POST">
-        <label for="name">Name: </label>
-        <input type="text" id="name" name="name" required>
-        <button type="submit">Submit</button>
+    <h1>Let's create a lesson!</h1>
+    <br>
+    <br>
 
-        <div id="greeting-result">
+
+    <form id="lesson-form" action="/api/create" method="POST">
+        <input type="text" id="prompt" name="prompt" placeholder="Lesson topic" required><br>
+        <input type="text" id="language" name="language" placeholder="Language"><br>
+        <div class="submit-container">
+            <button class="continue-button" type="submit">Create</button>
 
         </div>
     </form>
 
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const greetingForm = document.getElementById('greet-form');
+            const lessonForm = document.getElementById('lesson-form');
             const greetingResult = document.getElementById('greeting-result');
 
-            greetingForm.addEventListener('submit', function(event) {
+            lessonForm.addEventListener('submit', function(event) {
                 event.preventDefault(); // Prevent the form from submitting the traditional way
 
-                const formData = new FormData(greetingForm);
+                const formData = new FormData(lessonForm);
                 const name = formData.get('name');
 
-                fetch('/api/greet', {
+                fetch('/api/create', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -44,6 +53,6 @@
                 });
             });
         });
-    </script>
+    </script> -->
 </body>
 </html>
