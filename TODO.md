@@ -19,10 +19,19 @@
 - [x] Take inputs from User & Send it back as JSON
 - [x] Connect to OpenAI/Google's LLM and parse the user inputs 
 - [x] Output Strict JSON from LLM
+- [ ] Check if generated JSON is valid
 - [ ] save in file/database
 - [ ] Serve the user said file.
 - [ ] Update prompt to not show random trivia in Full English
 - [ ] Translation, seperate non-english words
 - [ ] Translation, add extra words
 
+### Logon/Register 
+- [ ] Database
+
+### Homepage / Lesson Creation
+
+### Profile ??
+
+### Leaderboard???
 
