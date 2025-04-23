@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 let users = {};
 
 // Login Route
@@ -23,7 +24,8 @@ router.post('/login', (req, res) => {
 
     // Check if user exists
     const user = users[username];
-    if (!user || user.password !== password) {
+    if (!user || bcrypt.compareSync(password, user.password) === false) {
+        // Invalid username or password
         return res.status(401).json({ error: 'Invalid username or password' });
     }
 
@@ -52,7 +54,14 @@ router.post('/register', async (req, res) => {
         }
 
         // Save the user
-        users[username] = { username, password };
+        bcrypt.hash(password, saltRounds, (err, hash) => {
+            if (err) {
+                console.error('Error hashing password:', err);
+                return res.status(500).json({ error: 'Internal server error' });
+            }
+            // Store the hashed password
+            users[username] = { username, password: hash };
+        });
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
         console.error('Error registering user:', error);
