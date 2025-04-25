@@ -98,26 +98,20 @@ router.post('/register', [
 
 
         // Save the user
-        bcrypt.hash(password, saltRounds, (err, hash) => {
-            if (err) {
-                console.error('Error hashing password:', err);
-                return res.status(500).json({ error: 'Internal server error' });
-            }
+        try {
+            const hash = await bcrypt.hash(password, saltRounds);
             // Store the hashed password
             const newUser = new User({
                 username,
                 password: hash
             });
-            newUser.save()
-                .then(() => {
-                    console.log('User registered successfully');
-                })
-                .catch(err => {
-                    console.error('Error saving user:', err);
-                    return res.status(500).json({ error: 'Internal server error' });
-                });
-        });
-        res.status(201).json({ message: 'User registered successfully' });
+            await newUser.save();
+            console.log('User registered successfully');
+            res.status(201).json({ message: 'User registered successfully' });
+        } catch (err) {
+            console.error('Error during user registration:', err);
+            res.status(500).json({ error: 'Internal server error' });
+        }
     } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).json({ error: 'Internal server error' });
