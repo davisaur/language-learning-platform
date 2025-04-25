@@ -2,7 +2,7 @@ body {
     margin: 0;
 }
 
-.wrapper {
+.login-wrapper, .register-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;

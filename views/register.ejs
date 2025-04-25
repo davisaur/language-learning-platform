@@ -8,15 +8,16 @@
     <link rel="stylesheet" href="/styles/auth.css">
 </head>
 <body>
-    <div class="wrapper">
+    <div class="register-wrapper">
         <div class="register-container">
             <h1>Register</h1>
             <form action="/auth/register" method="POST">
-                <input type="text" id="username" name="username" placeholder="Username" required><br>
-                <input type="password" id="password" name="password" placeholder="Password" required><br>
-                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required><br>
-                <button type="submit">Register</button>
+                <input type="text" id="username" name="username" placeholder="Username" minlength="3" maxlength="32" required><br>
+                <input type="password" id="password" name="password" placeholder="Password" minlength="6" maxlength="32" equired><br>
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" minlength="6" maxlength="32" required><br>
+                <button type="submit" style="margin-bottom:1em;">Register</button>
             </form>
+            <a href="/auth/login">Already have an account? Login here</a>
         </div>
     </div>
 
