@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const User = require('../models/User');
@@ -16,9 +17,25 @@ router.get('/login', (req, res) => {
     res.render('login');
 });
 
-router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
+router.post('/login', [
+    body('username')
+        .trim()
+        .notEmpty().withMessage('Username is required')
+        .escape(),
+    body('password')
+        .trim()
+        .notEmpty().withMessage('Password is required')
+        .escape()
+],async (req, res) => {
+    const { username, password } = req.body;  
+    const errors = validationResult(req);
 
+    // Check if there are validation errors
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    // Check if username and password are provided
     if (!username || !password) {
         return res.status(400).json({ error: 'Username and password are required' });
     }
@@ -53,11 +70,23 @@ router.get('/register', (req, res) => {
     res.render('register');
 });
 
-router.post('/register', async (req, res) => {
+router.post('/register', [
+    body('username')
+        .trim()
+        .notEmpty().withMessage('Username is required')
+        .isLength({ min: 3 }).withMessage('Username must be at least 3 characters long')
+        .isAlphanumeric().withMessage('Username must be alphanumeric')
+        .escape(),
+    body('password')
+        .trim()
+        .notEmpty().withMessage('Password is required')
+        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+        .escape()
+], async (req, res) => {
     const { username, password } = req.body;
-
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ error: errors.array().at(0).msg });
     }
 
     try {
