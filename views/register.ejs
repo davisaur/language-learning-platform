@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/auth.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.19.1/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.19.1/dist/sweetalert2.min.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="register-wrapper">
+        <div class="register-container">
+            <h1>Register</h1>
+            <form action="/auth/register" method="POST">
+                <input type="text" id="username" name="username" placeholder="Username" minlength="3" maxlength="32" required><br>
+                <input type="password" id="password" name="password" placeholder="Password" minlength="6" maxlength="32" equired><br>
+                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" minlength="6" maxlength="32" required><br>
+                <button type="submit" style="margin-bottom:1em;">Register</button>
+            </form>
+            <a href="/auth/login">Already have an account? Login here</a>
+        </div>
+    </div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            if (password !== confirmPassword) {
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Passwords do not match!',
+            });
+            return; 
+            }
+
+            try {
+                const response = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                const result = await response.json();
+
+                if(response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: result.message || 'Registration successful! You can now log in.',
+                    }).then(() => {
+                        // Redirect to login page after user closes the alert
+                        window.location.href = '/auth/login';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed',
+                        text: result.error || 'Registration failed. Please try again.',
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred. Please try again later.',
+                });
+            }
+        });
+    </script>
+</body>
+</html>

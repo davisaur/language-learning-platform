@@ -53,7 +53,7 @@ button:disabled {
 
 }
 
-input[type="text"] {
+input[type="text"], input[type="email"], input[type="password"] {
     font-family: inherit;
     font-weight: 600;
     font-size: 1em;
@@ -67,6 +67,8 @@ input[type="text"] {
     border-radius: 8px;
     box-shadow: var(--button-color) 0px 3px 0px;
 }
+
+
 
 input::placeholder {
     color: var(--placeholder-text-color);
