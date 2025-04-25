@@ -13,6 +13,18 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    streak: {
+        type: Number,
+        default: 0
+    },
+    lastLessonDate: {
+        type: Date,
+        default: null
+    },
+    completedLessons: {
+        type: [String],
+        default: []
     }
 });
 
