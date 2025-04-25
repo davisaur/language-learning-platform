@@ -74,13 +74,13 @@ router.post('/register', [
     body('username')
         .trim()
         .notEmpty().withMessage('Username is required')
-        .isLength({ min: 3 }).withMessage('Username must be at least 3 characters long')
+        .isLength({ min: 3, max: 32 }).withMessage('Username must be at least 3 characters long')
         .isAlphanumeric().withMessage('Username must be alphanumeric')
         .escape(),
     body('password')
         .trim()
         .notEmpty().withMessage('Password is required')
-        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
+        .isLength({ min: 6, max: 32 }).withMessage('Password must be at least 6 characters long')
         .escape()
 ], async (req, res) => {
     const { username, password } = req.body;
