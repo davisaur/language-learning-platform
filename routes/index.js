@@ -11,7 +11,7 @@ const checkUserSession = (req, res, next) => {
 
 // GET / route
 router.get('/', checkUserSession, (req, res) => {
-    res.render('create');
+    res.render('create', { user: req.session.user.username });
 });
 
 module.exports = router;
