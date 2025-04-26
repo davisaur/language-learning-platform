@@ -42,7 +42,7 @@
                         </div>
                         <div class="nav-text streak">365</div>
                     </a>
-                    <a class="nav-link" href="/auth/logout">
+                    <a class="nav-link" onsubmit="signOut()">
                         <div class="nav-sign-out">Sign Out</div>
                     </a>
                 </div>
@@ -60,5 +60,24 @@
             </form>
         </div>
     </div>
+
+    <script>
+        function signOut() {
+            fetch('/auth/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/auth/login';
+                } else {
+                    console.error('Logout failed');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 </html>
