@@ -31,7 +31,7 @@ p {
     color: #555;
 }
 
-button {
+button, .button {
     font-family: inherit;
     font-weight: 600;
     font-size: 1em;
@@ -44,6 +44,7 @@ button {
     border-radius: 8px;
     box-shadow: var(--button-color) 0px 3px 0px;
     cursor: pointer;
+    text-decoration: none;
 }
 
 button:disabled {

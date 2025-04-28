@@ -18,44 +18,74 @@
             <div class="top-nav">
                 <div class="logo"></div>
                 <div class="nav-links">
-                    <a class="nav-link">
+                    <a href="#" class="nav-link" id="course-link">
                         <div class="nav-icon">
                             <img src="/images/placeholder.png" width="32px">
                         </div>
                         <div class="nav-text">Course</div>
                     </a>
-                    <a href="/" class="nav-link selected-nav-link">
+                    <a href="#" class="nav-link" id="create-link">
                         <div class="nav-icon">
                             <img src="/images/placeholder.png" width="32px">
                         </div>
                         <div class="nav-text">Create</div>
                     </a>
-                    
                 </div>
+
             </div>
             <div class="bottom-nav">
                 <div class="nav-links">
-                    <p>Hello, <%- user %>!</p>
+                    <p>Hello, <%- user.username %>!</p>
                     <a class="nav-link nav-flex">
                         <div class="nav-icon">
                             <img src="/images/streak.png" width="32px">
                         </div>
                         <div class="nav-text streak">365</div>
                     </a>
-                    <a class="nav-link" onsubmit="signOut()">
+                    <a class="nav-link" href="#" onclick="signOut()">
                         <div class="nav-sign-out">Sign Out</div>
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="lesson-creation-container">
+        <div class="lesson-creation-container" hidden>
             <h1>Let's create a lesson!</h1>
             <form id="lesson-form" action="/api/create" method="POST">
                 <input type="text" id="prompt" name="prompt" placeholder="Lesson topic" required><br>
                 <input type="text" id="language" name="language" placeholder="Language"><br>
                 <div class="submit-container">
                     <button class="continue-button" type="submit">Create</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="course-container">
+            <h1>Course</h1>
+            <div class="course-list">
+                <% lessons.forEach(function(lesson, index) { %>
+                    <div class="course-item" style="box-shadow: 0px 0px 3px #ccc; border-radius: 10px; margin: 2em;">
+                        <h2><%= lesson.title %></h2>
+                        <p><%= lesson.description %></p>
+                        <a href="/courses/<%= lesson.id %>" class="view-course-button button">View Course</a>
+                    </div>
+                    
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <div class="language-selector-wrapper">
+        <div class="language-selector-container">
+            <h1>Select a Language</h1>
+            <form id="language-form" action="/api/select-language" method="POST">
+                <select id="language-select" name="language">
+                    <% languages.forEach(function(language) { %>
+                        <option value="<%= language.language %>"><%= language.language %></option>
+                    <% }); %>
+                </select>
+                <div class="submit-container">
+                    <button class="continue-button" type="submit">Select</button>
                 </div>
             </form>
         </div>
@@ -78,6 +108,34 @@
             })
             .catch(error => console.error('Error:', error));
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const lessonCreationContainer = document.querySelector('.lesson-creation-container');
+            const lessonCreationLink = document.getElementById('create-link');
+            const courseContainer = document.querySelector('.course-container');
+            const courseLink = document.getElementById('course-link');
+
+            const selectedContainer = lessonCreationContainer.hidden ? courseContainer : lessonCreationContainer;
+            const selectedLink = lessonCreationContainer.hidden ? courseLink : lessonCreationLink;
+
+            selectedContainer.hidden = false;
+            selectedLink.classList.add('selected-nav-link');
+
+            lessonCreationLink.addEventListener('click', function() {
+                lessonCreationContainer.hidden = false;
+                courseContainer.hidden = true;
+                lessonCreationLink.classList.add('selected-nav-link');
+                courseLink.classList.remove('selected-nav-link');
+            });
+
+            courseLink.addEventListener('click', function() {
+                lessonCreationContainer.hidden = true;
+                courseContainer.hidden = false;
+                courseLink.classList.add('selected-nav-link');
+                lessonCreationLink.classList.remove('selected-nav-link');
+            });
+        });
+
     </script>
 </body>
 </html>
