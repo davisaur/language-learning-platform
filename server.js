@@ -50,12 +50,14 @@ app.use(session({
 const indexRoutes = require('./routes/index');
 const lessonRoutes = require('./routes/lesson');
 const userRoutes = require('./routes/user');
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./routes/api/auth');
+// const languageRoutes = require('./routes/api/language');
 
 app.use('/', indexRoutes);
 app.use('/lesson', lessonRoutes);
 app.use('/user', userRoutes);
-app.use('/auth', authRoutes);
+app.use('/api', authRoutes);
+// app.use('/api', languageRoutes);
 
 // --- Start Server ---
 app.listen(PORT, () => {

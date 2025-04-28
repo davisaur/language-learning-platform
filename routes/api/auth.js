@@ -3,7 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const User = require('../models/User');
+const User = require('../../models/User');
 const saltRounds = 10;
 
 // Login Route
@@ -11,10 +11,6 @@ const saltRounds = 10;
 router.use((req, res, next) => {
     console.log();
     next();
-});
-
-router.get('/login', (req, res) => {
-    res.render('login');
 });
 
 router.post('/login', [
@@ -65,10 +61,6 @@ router.post('/login', [
 });
 
 // Register Routes
-
-router.get('/register', (req, res) => {
-    res.render('register');
-});
 
 router.post('/register', [
     body('username')
@@ -125,7 +117,7 @@ router.post('/logout', (req, res) => {
             console.error('Error destroying session:', err);
             return res.status(500).json({ error: 'Internal server error' });
         }
-        res.redirect('/auth/login');
+        res.redirect('/login');
     });
 });
         

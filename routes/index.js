@@ -37,7 +37,7 @@ const languages = [{
 // Check if the user session exists
 const checkUserSession = (req, res, next) => {
     if (!req.session.user) {
-        return res.redirect('/auth/login');
+        return res.redirect('/login');
     }
     next();
 };
@@ -56,5 +56,12 @@ router.get('/', checkUserSession, (req, res) => {
     res.render('create', { user: req.session.user, languages, lessons });
 });
 
+router.get('/login', (req, res) => {
+    res.render('login');
+});
+
+router.get('/register', (req, res) => {
+    res.render('register');
+});
 
 module.exports = router;
