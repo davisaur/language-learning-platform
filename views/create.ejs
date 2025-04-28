@@ -110,30 +110,27 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            const toggleVisibility = (showContainer, hideContainer, activeLink, inactiveLink) => {
+            showContainer.hidden = false;
+            hideContainer.hidden = true;
+            activeLink.classList.add('selected-nav-link');
+            inactiveLink.classList.remove('selected-nav-link');
+            };
+
             const lessonCreationContainer = document.querySelector('.lesson-creation-container');
-            const lessonCreationLink = document.getElementById('create-link');
             const courseContainer = document.querySelector('.course-container');
+            const lessonCreationLink = document.getElementById('create-link');
             const courseLink = document.getElementById('course-link');
 
-            const selectedContainer = lessonCreationContainer.hidden ? courseContainer : lessonCreationContainer;
-            const selectedLink = lessonCreationContainer.hidden ? courseLink : lessonCreationLink;
+            toggleVisibility(courseContainer, lessonCreationContainer, courseLink, lessonCreationLink);
 
-            selectedContainer.hidden = false;
-            selectedLink.classList.add('selected-nav-link');
+            lessonCreationLink.addEventListener('click', () => 
+            toggleVisibility(lessonCreationContainer, courseContainer, lessonCreationLink, courseLink)
+            );
 
-            lessonCreationLink.addEventListener('click', function() {
-                lessonCreationContainer.hidden = false;
-                courseContainer.hidden = true;
-                lessonCreationLink.classList.add('selected-nav-link');
-                courseLink.classList.remove('selected-nav-link');
-            });
-
-            courseLink.addEventListener('click', function() {
-                lessonCreationContainer.hidden = true;
-                courseContainer.hidden = false;
-                courseLink.classList.add('selected-nav-link');
-                lessonCreationLink.classList.remove('selected-nav-link');
-            });
+            courseLink.addEventListener('click', () => 
+            toggleVisibility(courseContainer, lessonCreationContainer, courseLink, lessonCreationLink)
+            );
         });
 
     </script>
