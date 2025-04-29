@@ -81,14 +81,14 @@
 
         // Multiple Choice Variables
         const submitButton = document.getElementById('submit-button');
-        const questions = JSON.parse( <%= JSON.stringify(questions) %> );
+        const questions = <%- JSON.stringify(lesson.content) %>;
 
         document.addEventListener('DOMContentLoaded', () => {
-            for (let i = 0; i < questions.questions.length; i++) {
+            for (let i = 0; i < questions.length; i++) {
                 questionsIndex.push(i);
             }
 
-            currentQuestion = questions.questions[questionsIndex[currentQuestionIndex]];
+            currentQuestion = questions[questionsIndex[currentQuestionIndex]];
             processQuestion();
         });        
 
@@ -307,7 +307,7 @@
 
                 // Update progress bar
                 const progressBar = document.querySelector('.progress-bar');
-                const progressPercentage = ((correctAnswers / questions.questions.length) * 100).toFixed(2);
+                const progressPercentage = ((correctAnswers / questions.length) * 100).toFixed(2);
                 progressBar.style.width = `${progressPercentage}%`;
             } else {
                 if(currentQuestionIndex <=   questionsIndex.length - 1) {
@@ -342,7 +342,7 @@
         }
 
         function nextQuestion() {
-            currentQuestion = questions.questions[questionsIndex[currentQuestionIndex]];
+            currentQuestion = questions[questionsIndex[currentQuestionIndex]];
             // clear previous question and answers
             sourceWordList.innerHTML = '';
             translatedWordList.innerHTML = '';

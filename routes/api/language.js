@@ -5,12 +5,24 @@ const fs = require('fs');
 const path = require('path');
 const Language = require('../../models/language');
 const User = require('../../models/User');
+const Lesson = require('../../models/lesson');
 const aiService = require('../../utils/aiService');
 
+// Load the language prompt template
 
 const languagePromptPath = path.join(__dirname, '../../prompts', 'create-course.txt');
 let languagePrompt = fs.readFileSync(languagePromptPath, 'utf8');
 
+// Load the lesson prompt template
+const lessonPromptPath = path.join(__dirname, '../../prompts', 'create-lesson.txt');
+const lessonPrompt = fs.readFileSync(lessonPromptPath, 'utf8');
+
+// Function to generate a lesson
+async function generateLesson(userPrompt, language) {
+    const prompt = lessonPrompt.replace('[[LESSON_LANGUAGE]]', language).replace('[[LESSON_PROMPT]]', userPrompt);
+    const response = await aiService.generateResponse(prompt);
+    return response;
+}
 
 // TODO: input should validated
 router.post('/language', async (req, res) => {
@@ -61,8 +73,48 @@ router.post('/language', async (req, res) => {
 });
 
 router.post('/generate', async (req, res) => {
+
     
-    
+});
+
+router.get('/lesson/:index', async (req, res) => {
+    // check if lesson already exists
+    const { index } = req.params;
+    const language = await Language.findOne({ language: req.session.user.currentLanguage });
+    if (!language) {
+        return res.status(404).json({ message: 'Language not found' });
+    }
+
+    const lesson = language.course[index];
+    if (!lesson.lessonId || lesson.lessonId === "") {
+        // generate lesson
+        generateLesson(lesson.title, req.session.user.currentLanguage)
+            .then(async (lesson) => {
+                // Remove backticks and "json" from the response
+                lesson = lesson.replace(/`/g, '').replace(/json/g, '');
+                lesson = JSON.parse(lesson);
+                // Save the lesson to the database
+                const newLesson = new Lesson({
+                    language: req.session.user.currentLanguage,
+                    content: lesson.questions
+                });
+
+                await newLesson.save();
+                // Update the language course with the lesson ID
+                language.course[index].lessonId = newLesson._id;
+                await language.save();
+                res.redirect(`/lesson/${newLesson._id}`);
+            })
+            .catch(err => {
+                console.error('Error generating lesson:', err);
+                res.status(500).json({ error: 'Failed to generate lesson' });
+            });
+
+    } else {
+        // lesson already exists, redirect to lesson page
+        const lessonId = lesson.lessonId;
+        res.redirect(`/lesson/${lessonId}`);
+    }
 });
 
 module.exports = router;

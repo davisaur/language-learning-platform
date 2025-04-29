@@ -12,6 +12,7 @@ const checkUserSession = (req, res, next) => {
 
 const checkIfUserHasLanguage = (req, res, next) => {
     if (!req.session.user.currentLanguage) {
+        // TODO: welcome screen
         return res.redirect('/languages');
     }
     next();
