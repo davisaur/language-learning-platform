@@ -21,10 +21,10 @@
                     <% languages.forEach(function(language) { %>
                         <option value="<%= language.language %>"><%= language.language %></option>
                     <% }); %>
-                    <!-- TODO: Include users previous language choices -->
+                    <!-- TODO: Include users language -->
                       <option value="other">Other</option>
                 </select>
-                <input type="text" id="other-language" name="other-language" placeholder="Other language" style="display: none;">
+                <input type="text" id="otherLanguage" name="otherLanguage" placeholder="Type the language you want to learn" style="display: none;">
                 <div class="submit-container">
                     <button class="continue-button" type="submit">Select</button>
                 </div>
@@ -34,15 +34,33 @@
 
     <script>
         const languageSelect = document.getElementById('language-select');
-        const otherLanguageInput = document.getElementById('other-language');
+        const otherLanguageInput = document.getElementById('otherLanguage');
 
         languageSelect.addEventListener('change', function() {
             if (this.value === 'other') {
                 otherLanguageInput.style.display = 'block';
+                isOtherLanguageEmpty();
+                
             } else {
                 otherLanguageInput.style.display = 'none';
+                document.querySelector('.continue-button').disabled = false;
             }
+        
         });
+
+        otherLanguageInput.addEventListener('input', function() {
+            isOtherLanguageEmpty();
+        });
+
+        function isOtherLanguageEmpty() {
+            if (otherLanguageInput.value.trim() === '') {
+                document.querySelector('.continue-button').disabled = true;
+            } else {
+                document.querySelector('.continue-button').disabled = false;
+            }
+        }
+
+        // 
     </script>
 </body>
 </html>

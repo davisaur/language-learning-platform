@@ -42,6 +42,18 @@
                         </div>
                         <div class="nav-text streak">365</div>
                     </a>
+                    <!-- TODO: XP icon and text color -->
+                    <a class="nav-link nav-flex">
+                        <div class="nav-icon">
+                            <img src="/images/placeholder.png" width="32px">
+                        </div>
+                        <div class="nav-text xp-text">0 XP</div>
+                    </a>
+                    <a class="nav-link nav-flex" href="/languages">
+                        <img src="/images/streak.png" width="32px" style="white-space: nowrap;">
+                        <span style="display: inline-block; height: 100%; line-height: 32px; vertical-align: middle;"><%- user.currentLanguage.charAt(0).toUpperCase() + user.currentLanguage.slice(1); %></span>
+                        <img src="/images/placeholder.png" width="32px">
+                    </a>
                     <a class="nav-link" href="#" onclick="signOut()">
                         <div class="nav-sign-out">Sign Out</div>
                     </a>

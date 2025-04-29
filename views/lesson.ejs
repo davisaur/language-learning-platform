@@ -98,8 +98,18 @@
                 document.querySelector('#originalText').textContent = currentQuestion.question.sourceText;
                 document.querySelector('#expected-answer').textContent = currentQuestion.question.translatedText;
 
-                const expectedResult = currentQuestion.question.translatedText.split(' ').map(word => word.toLowerCase());
-                const scrambledWordList = expectedResult.slice().sort(() => Math.random() - 0.5);
+                const expectedResult = currentQuestion.question.translatedText
+                    .replace(/[\p{P}\p{S}]/gu, '') // Remove punctuation and symbols, including those from other languages
+                    .split(' ')
+                    .map(word => word.toLowerCase());
+
+                let scrambledWordList = [...expectedResult];
+
+                if(currentQuestion.question.extraWords) {
+                    scrambledWordList.push(...currentQuestion.question.extraWords.map(word => word.toLowerCase()));
+                }
+
+                scrambledWordList = scrambledWordList.sort(() => Math.random() - 0.5);
 
                 for (const word of scrambledWordList) {
                     const button = document.createElement('button');
@@ -244,7 +254,8 @@
                 } else {
                     // Incorrect match
                     selectedButton.classList.remove("selected-button");
-
+                    playSound('incorrect-sound');
+                    
                     // animate red
                     const incorrectButtons = [selectedButton, btn];
                     incorrectButtons[0].classList.add("incorrect-answer");
@@ -273,7 +284,7 @@
 
         function checkResult() {
             if(currentQuestion.type === "TRANSLATION") {
-                const expectedResult = currentQuestion.question.translatedText.split(' ').map(word => word.toLowerCase());
+                const expectedResult = currentQuestion.question.translatedText.replace(/[\p{P}\p{S}]/gu, '').split(' ').map(word => word.toLowerCase());
                 const selectedWords = Array.from(translatedWordList.querySelectorAll('.button')).map(button => button.dataset.word);
                 const isCorrect = expectedResult.length === selectedWords.length && expectedResult.every((word, index) => word === selectedWords[index]);
                 
@@ -300,10 +311,7 @@
                 correctAnswers++;
 
                 // Play correct sound
-                const correctSound = document.getElementById('correct-sound');
-                correctSound.currentTime = 0; // Reset sound to start
-                correctSound.volume = 0.5; // Set volume to 50%
-                correctSound.play();
+                playSound('correct-sound');
 
                 // Update progress bar
                 const progressBar = document.querySelector('.progress-bar');
@@ -316,10 +324,7 @@
                 document.querySelector('.incorrect-result').hidden = false;
 
                 // Play incorrect sound
-                const incorrectSound = document.getElementById('incorrect-sound');
-                incorrectSound.currentTime = 0; // Reset sound to start
-                incorrectSound.volume = 0.5; // Set volume to 50%
-                incorrectSound.play();
+                playSound('incorrect-sound');
             }
             if(currentQuestionIndex > questionsIndex.length - 1) {
                 if(questionsIndex.length > 0) {
@@ -334,6 +339,8 @@
                     completeSound.play();
 
                     alert("Lesson Complete!");  
+                    // TODO: send user to completion screen and POST lesson completion
+                    window.location.href = "/";
                 }
             }
             console.log("Current question index: ", currentQuestionIndex);
@@ -366,6 +373,13 @@
             // process next question
             processQuestion();
             
+        }
+
+        function playSound(sound) {
+            const audio = document.getElementById(sound);
+            audio.currentTime = 0; // Reset sound to start
+            audio.volume = 0.5; // Set volume to 50%
+            audio.play();
         }
     </script>
 </body>

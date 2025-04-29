@@ -26,16 +26,24 @@ async function generateLesson(userPrompt, language) {
 
 // TODO: input should validated
 router.post('/language', async (req, res) => {
-    const { language } = req.body;
+    let { language, otherLanguage } = req.body;
     if (!language) {
         return res.status(400).json({ message: 'Language is required' });
     }
 
+    if (language === 'other') {
+        if (!otherLanguage) {
+            return res.status(400).json({ message: 'Other language is required' });
+        }
+        language = otherLanguage;
+        language = language.trim();
+    }
+
+    language = language.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
     // check if language exists in database 
-    const existingLanguage = await Language.findOne({ language: language.toLowerCase() });
+    const existingLanguage = await Language.findOne({ language });
     if (!existingLanguage) {
-        
-        const newLanguage = new Language({ language: language.toLowerCase(), custom: false });
+        const newLanguage = new Language({ language: language, custom: false });
     
         const prompt = languagePrompt.replace('[[LANGUAGE]]', language).replace('[[NUMBER_OF_LESSONS]]', '10');
         const response = await aiService.generateResponse(prompt);
@@ -45,11 +53,11 @@ router.post('/language', async (req, res) => {
                 console.log(response);
                 const parsedResponse = JSON.parse(response);
                 newLanguage.course = parsedResponse;
+                await newLanguage.save();
             } catch (e) {
                 return res.status(400).json({ message: 'Invalid JSON response from AI service' });
             }
     
-            await newLanguage.save();
         } else {
             res.status(500).json({ message: 'Error generating lessons' });
         }

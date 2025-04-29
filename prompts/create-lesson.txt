@@ -12,7 +12,9 @@ There are three types of activities you can create:
           "type": "TRANSLATION",
           "question": {
             "sourceText": "Original sentence in source language",
-            "translatedText": "Correct translation in target language"
+            "translatedText": "Correct translation in target language",
+            "extraWords": [] 
+            // Add a few words into this string array to throw off the user
           }
         }
         ```
