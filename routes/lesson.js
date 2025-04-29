@@ -2,25 +2,19 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
-const aiModel = require('@google/genai');
+const ai = require('../utils/aiService'); 
+const aiService = require('../utils/aiService');
 
 // Load the lesson prompt template
 const lessonPromptPath = path.join(__dirname, '../prompts', 'create-lesson.txt');
 const lessonPrompt = fs.readFileSync(lessonPromptPath, 'utf8');
 
-// Initialize Google GenAI client
-const ai = new aiModel.GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-});
 
 // Function to generate a lesson
 async function generateLesson(userPrompt, language) {
     const prompt = lessonPrompt.replace('[[LESSON_LANGUAGE]]', language).replace('[[LESSON_PROMPT]]', userPrompt);
-    const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash-preview-04-17',
-        contents: prompt
-    });
-    return response.text;
+    const response = await aiService.generateResponse(prompt);
+    return response;
 }
 
 // POST /lesson route

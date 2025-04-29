@@ -81,7 +81,7 @@
 
         // Multiple Choice Variables
         const submitButton = document.getElementById('submit-button');
-        const questions = <%- questions %>;
+        const questions = JSON.parse( <%= JSON.stringify(questions) %> );
 
         document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < questions.questions.length; i++) {

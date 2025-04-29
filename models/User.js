@@ -25,7 +25,17 @@ const userSchema = new mongoose.Schema({
     completedLessons: {
         type: [String],
         default: []
-    }
+    },
+    currentLanguage: {
+        type: String,
+        default: null
+    },
+    languages: {
+        // Array of strings
+        type: [String],
+        default: []
+    },
+            
 });
 
 module.exports = mongoose.model('User', userSchema);

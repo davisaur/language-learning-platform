@@ -49,25 +49,14 @@
             </div>
         </div>
 
-        <div class="lesson-creation-container" hidden>
-            <h1>Let's create a lesson!</h1>
-            <form id="lesson-form" action="/api/create" method="POST">
-                <input type="text" id="prompt" name="prompt" placeholder="Lesson topic" required><br>
-                <input type="text" id="language" name="language" placeholder="Language"><br>
-                <div class="submit-container">
-                    <button class="continue-button" type="submit">Create</button>
-                </div>
-            </form>
-        </div>
-
         <div class="course-container">
             <h1>Course</h1>
             <div class="course-list">
-                <% lessons.forEach(function(lesson, index) { %>
+                <% language.course.forEach(function(lesson, index) { %>
                     <div class="course-item" style="box-shadow: 0px 0px 3px #ccc; border-radius: 10px; margin: 2em;">
                         <h2><%= lesson.title %></h2>
                         <p><%= lesson.description %></p>
-                        <a href="/courses/<%= lesson.id %>" class="view-course-button button">View Course</a>
+                        <a href="/courses/<%= index %>" class="view-course-button button">View Course</a>
                     </div>
                     
                 <% }); %>
@@ -75,25 +64,19 @@
         </div>
     </div>
 
-    <div class="language-selector-wrapper">
-        <div class="language-selector-container">
-            <h1>Select a Language</h1>
-            <form id="language-form" action="/api/select-language" method="POST">
-                <select id="language-select" name="language">
-                    <% languages.forEach(function(language) { %>
-                        <option value="<%= language.language %>"><%= language.language %></option>
-                    <% }); %>
-                </select>
-                <div class="submit-container">
-                    <button class="continue-button" type="submit">Select</button>
-                </div>
-            </form>
-        </div>
+    <div class="lesson-creation-container" hidden>
+        <h1>Let's create a lesson!</h1>
+        <form id="lesson-form" action="/lesson" method="POST">
+            <input type="text" id="prompt" name="prompt" placeholder="Lesson topic" required><br>
+            <div class="submit-container">
+                <button class="continue-button" type="submit">Create</button>
+            </div>
+        </form>
     </div>
 
     <script>
         function signOut() {
-            fetch('/auth/logout', {
+            fetch('/api/logout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -101,7 +84,7 @@
             })
             .then(response => {
                 if (response.ok) {
-                    window.location.href = '/auth/login';
+                    window.location.href = '/login';
                 } else {
                     console.error('Logout failed');
                 }
@@ -132,6 +115,8 @@
             toggleVisibility(courseContainer, lessonCreationContainer, courseLink, lessonCreationLink)
             );
         });
+
+        
 
     </script>
 </body>

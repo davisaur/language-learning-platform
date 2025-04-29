@@ -1,38 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-const languages = [{
-    "language": "Spanish",
-    "lessons": {
-        "A1": [
-            { 
-                "id": "1",
-                "title": "Greetings and Introductions", 
-                "description": "Learning basic greetings and farewells." 
-            },
-            { 
-                "id": "2",
-                "title": "Talking about yourself", 
-                "description": "Describing yourself and where you're from." 
-            },
-            { 
-                "id": "3",
-                "title": "Talking about yourself", 
-                "description": "Describing yourself and where you're from." 
-            },
-            { 
-                "id": "4",
-                "title": "Talking about yourself", 
-                "description": "Describing yourself and where you're from." 
-            },
-            { 
-                "id": "5",
-                "title": "Talking about yourself", 
-                "description": "Describing yourself and where you're from." 
-            }
-        ]
-    }
-}];
+const Language = require('../models/language');
 
 // Check if the user session exists
 const checkUserSession = (req, res, next) => {
@@ -42,18 +10,33 @@ const checkUserSession = (req, res, next) => {
     next();
 };
 
+const checkIfUserHasLanguage = (req, res, next) => {
+    if (!req.session.user.currentLanguage) {
+        return res.redirect('/languages');
+    }
+    next();
+};
+
 // GET / route
-router.get('/', checkUserSession, (req, res) => {
+router.get('/', checkUserSession, checkIfUserHasLanguage, async (req, res) => {
     
     // get users current language from database
-    // const userLanguage = req.session.user.language;
-    // const userLanguage = "Spanish";
-    const userLanguage = languages[0].language;
-    const userLanguageLevel = "A1";
-    const lessons = languages.find(lang => lang.language === userLanguage).lessons[userLanguageLevel];
+    const language = await Language.findOne({ language: req.session.user.currentLanguage });
+    if (!language) {
+        return res.status(404).json({ message: 'Language not found' });
+    }
+    console.log(req.session.user);
+    console.log(language);
+    res.render('create', { user: req.session.user, language });
+});
 
+router.get('/languages', checkUserSession, async (req, res) => {
 
-    res.render('create', { user: req.session.user, languages, lessons });
+    // get languages from database
+    const languages = await Language.find({}).select('language');
+    console.log(languages);
+
+    res.render('language-selector', { user: req.session.user, languages });
 });
 
 router.get('/login', (req, res) => {
