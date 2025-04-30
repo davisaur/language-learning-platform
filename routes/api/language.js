@@ -86,36 +86,54 @@ router.post('/generate', async (req, res) => {
         return res.status(400).json({ message: 'Prompt is required' });
     }
 
-    generateLesson(prompt, req.session.user.currentLanguage)
-        .then(async (lesson) => {
+    // Retry logic for generating a lesson
+    const tryGenerateLesson = async (retries = 2) => {
+        try {
+            // Attempt to generate the lesson
+            let lesson = await generateLesson(prompt, req.session.user.currentLanguage);
+
             // Remove backticks and "json" from the response
             lesson = lesson.replace(/`/g, '').replace(/json/g, '');
             lesson = JSON.parse(lesson);
+
             // Save the lesson to the database
             const newLesson = new Lesson({
                 language: req.session.user.currentLanguage,
-                content: lesson.questions
+                content: lesson.questions,
             });
             await newLesson.save();
-            // Update the user customLessons object array with the lesson         
+
+            // Update the user's customLessons array with the lesson
             const user = await User.findOne({ username: req.session.user.username });
             if (user) {
                 user.customLessons.push({ lessonId: newLesson._id, title: prompt });
                 await user.save();
-                req.session.user = user; 
+                req.session.user = user;
+
+                // Redirect to the newly created lesson
                 res.redirect(`/lesson/${newLesson._id}`);
             } else {
                 return res.status(400).json({ message: 'User not found' });
             }
-        })
-        .catch(err => {
+        } catch (err) {
             console.error('Error generating lesson:', err);
-            res.status(500).json({ error: 'Failed to generate lesson' });
-        });
+
+            // Retry if retries are left
+            if (retries > 0) {
+                console.log(`Retrying... (${2 - retries + 1} attempt)`);
+                await tryGenerateLesson(retries - 1);
+            } else {
+                // If all retries fail, send an error response
+                res.status(500).json({ error: 'Failed to generate lesson after multiple attempts' });
+            }
+        }
+    };
+
+    // Start the retry logic
+    await tryGenerateLesson();
 });
 
 router.get('/lesson/:index', async (req, res) => {
-    // check if lesson already exists
     const { index } = req.params;
     const language = await Language.findOne({ language: req.session.user.currentLanguage });
     if (!language) {
@@ -124,31 +142,48 @@ router.get('/lesson/:index', async (req, res) => {
 
     const lesson = language.course[index];
     if (!lesson.lessonId || lesson.lessonId === "") {
-        // generate lesson
-        generateLesson(lesson.title, req.session.user.currentLanguage)
-            .then(async (lesson) => {
+        // Retry logic for generating a lesson
+        const tryGenerateLesson = async (retries = 2) => {
+            try {
+                // Attempt to generate the lesson
+                let generatedLesson = await generateLesson(lesson.title, req.session.user.currentLanguage);
+
                 // Remove backticks and "json" from the response
-                lesson = lesson.replace(/`/g, '').replace(/json/g, '');
-                lesson = JSON.parse(lesson);
+                generatedLesson = generatedLesson.replace(/`/g, '').replace(/json/g, '');
+                generatedLesson = JSON.parse(generatedLesson);
+
                 // Save the lesson to the database
                 const newLesson = new Lesson({
                     language: req.session.user.currentLanguage,
-                    content: lesson.questions
+                    content: generatedLesson.questions,
                 });
 
                 await newLesson.save();
+
                 // Update the language course with the lesson ID
                 language.course[index].lessonId = newLesson._id;
                 await language.save();
-                res.redirect(`/lesson/${newLesson._id}`);
-            })
-            .catch(err => {
-                console.error('Error generating lesson:', err);
-                res.status(500).json({ error: 'Failed to generate lesson' });
-            });
 
+                // Redirect to the newly created lesson
+                res.redirect(`/lesson/${newLesson._id}`);
+            } catch (err) {
+                console.error('Error generating lesson:', err);
+
+                // Retry if retries are left
+                if (retries > 0) {
+                    console.log(`Retrying... (${2 - retries + 1} attempt)`);
+                    await tryGenerateLesson(retries - 1);
+                } else {
+                    // If all retries fail, send an error response
+                    res.status(500).json({ error: 'Failed to generate lesson after multiple attempts' });
+                }
+            }
+        };
+
+        // Start the retry logic
+        await tryGenerateLesson();
     } else {
-        // lesson already exists, redirect to lesson page
+        // Lesson already exists, redirect to lesson page
         const lessonId = lesson.lessonId;
         res.redirect(`/lesson/${lessonId}`);
     }
