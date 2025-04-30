@@ -20,13 +20,13 @@
                 <div class="nav-links">
                     <a href="#" class="nav-link" id="course-link">
                         <div class="nav-icon">
-                            <img src="/images/placeholder.png" width="32px">
+                            <img src="/images/course.png" width="32px">
                         </div>
                         <div class="nav-text">Course</div>
                     </a>
                     <a href="#" class="nav-link" id="create-link">
                         <div class="nav-icon">
-                            <img src="/images/placeholder.png" width="32px">
+                            <img src="/images/create.png" width="32px">
                         </div>
                         <div class="nav-text">Create</div>
                     </a>
@@ -45,14 +45,14 @@
                 <!-- TODO: XP icon and text color -->
                 <a class="nav-link nav-flex">
                     <div class="nav-icon">
-                        <img src="/images/placeholder.png" width="32px">
+                        <img src="/images/xp.png" width="32px">
                     </div>
                     <div class="nav-text xp-text"><%- user.stats.xp %> XP</div>
                 </a>
                 <a class="nav-link nav-flex" href="/languages">
-                    <img src="/images/placeholder.png" width="32px" style="white-space: nowrap;">
+                    <img src="/images/flags/<%- language.flag %>" width="32px" style="white-space: nowrap;">
                     <span><%- user.currentLanguage %></span>
-                    <img src="/images/placeholder.png" width="32px">
+                    <img src="/images/selector.png" width="32px">
                 </a>
                 <a class="nav-link" href="#" onclick="signOut()">
                     <div class="nav-sign-out">Sign Out</div>
@@ -73,7 +73,7 @@
                         <% if (index !==0) { if (!user.completedLessons.includes(language.course[index - 1].lessonId)) { %>
                             <div class="course-item-disabled-container" hidden>
                                 <div class="course-item-disabled">
-                                    <img src="/images/placeholder.png" width="64px">
+                                    <img src="/images/locked.png" width="64px">
                                 </div>
                             </div>
                             <% }} %>

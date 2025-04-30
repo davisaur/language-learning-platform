@@ -21,6 +21,10 @@ const languageSchema = new mongoose.Schema({
         ],
         default: []
     },
+    flag: {
+        type: String,
+        default: "unknown.png"
+    },
     createdAt: {
         type: Date,
         default: Date.now

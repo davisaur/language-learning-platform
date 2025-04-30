@@ -43,7 +43,7 @@ router.post('/language', async (req, res) => {
     // check if language exists in database 
     const existingLanguage = await Language.findOne({ language });
     if (!existingLanguage) {
-        const newLanguage = new Language({ language: language, custom: false });
+        const newLanguage = new Language({ language: language, custom: true });
     
         const prompt = languagePrompt.replace('[[LANGUAGE]]', language).replace('[[NUMBER_OF_LESSONS]]', '10');
         const response = await aiService.generateResponse(prompt);

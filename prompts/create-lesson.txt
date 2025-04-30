@@ -5,7 +5,7 @@ The JSON object must contain a root key "questions" which holds an array of acti
 There are three types of activities you can create:
 
 1.  **Translation:** The user puts jumbled words of a translated sentence into the correct order.
-    * Limitation: If the user is learning a language that don't contain spaces between words, such as Japanese, put spaces anyway as the application splits the sentence based off them. 
+    * Limitation: If the user is learning a language that don't contain spaces between words, such as Japanese, put spaces anyway as the application splits the sentence based off words. Do not split individual characters. 
     * JSON Structure:
         ```json
         {
