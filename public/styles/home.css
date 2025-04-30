@@ -30,6 +30,10 @@
     width: 100%;
 }
 
+.content-wrapper.expanded {
+    margin-left: 0;
+}
+
 .lesson-creation-container, .course-container {
     max-width: 1000px;
     margin: auto;
@@ -133,4 +137,15 @@
     pointer-events: none;
 
 
+}
+
+/* Hide the navigation bar */
+.nav-bar.hidden {
+    display: none;
+}
+
+#toggle-nav {
+    font-size: 1.5em;
+    box-shadow: none;
+    border: 0;
 }

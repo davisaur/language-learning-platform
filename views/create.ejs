@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="nav-bar">
+        <div class="nav-bar" id="nav-bar">
             <div class="top-nav">
                 <div class="logo"></div>
                 <div class="nav-links">
@@ -61,6 +61,9 @@
             </div>
         </div>
         <div class="content-wrapper">
+            <div style="position: fixed;">
+                <button id="toggle-nav">☰</button>
+            </div>
             <div class="course-container">
                 <h1>Course</h1>
                 <div class="course-list">
@@ -146,7 +149,23 @@
             courseLink.addEventListener('click', () => 
             toggleVisibility(courseContainer, lessonCreationContainer, courseLink, lessonCreationLink)
             );
+
+            const toggleNavButton = document.getElementById('toggle-nav');
+            const navBar = document.getElementById('nav-bar');
+            const contentWrapper = document.querySelector('.content-wrapper');
+
+            toggleNavButton.addEventListener('click', () => {
+                navBar.classList.toggle('hidden');
+                contentWrapper.classList.toggle('expanded');
+            });
+
+            // if the screen is small, hide the nav bar
+            if (window.innerWidth < 768) {
+                navBar.classList.add('hidden');
+                contentWrapper.classList.add('expanded');
+            }
         });
+        
 
         
 
