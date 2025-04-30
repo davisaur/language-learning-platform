@@ -17,6 +17,7 @@
         <div class="language-selector-container">
             <h1>Select a Language</h1>
             <form id="language-form" action="/api/language" method="POST">
+                <p style="margin:0;">Select a language you want to learn!</p>
                 <select id="language-select" name="language">
                     <% languages.forEach(function(language) { if(!language.custom) { %>
                         <option value="<%= language.language %>"><%= language.language %></option>
@@ -30,6 +31,15 @@
                     <button class="continue-button" type="submit">Select</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <div class="generating-wrapper" hidden>
+        <div class="generating-container">
+            <h1>Generating language structure!</h1>
+            <div class="spinner-container">
+                <div class="spinner"></div>
+            </div>
         </div>
     </div>
 
@@ -64,7 +74,13 @@
             }
         }
 
-        // 
+        const languageForm = document.getElementById('language-form');
+        const generatingWrapper = document.querySelector('.generating-wrapper');
+
+        languageForm.addEventListener('submit', function(event) {
+            // Show the generating-wrapper
+            generatingWrapper.hidden = false;
+        });
     </script>
 </body>
 </html>
