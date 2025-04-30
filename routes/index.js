@@ -54,7 +54,7 @@ router.get('/', checkUserSession, checkIfUserHasLanguage, checkIfUserStreakPause
     }
     console.log(req.session.user);
     console.log(language);
-    res.render('create', { user: req.session.user, language });
+    res.render('home', { user: req.session.user, language });
 });
 
 router.get('/languages', checkUserSession, async (req, res) => {

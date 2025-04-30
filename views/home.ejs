@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Learning Platform</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/home.css">
+    <style>
+        body {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="nav-bar" id="nav-bar">
+            <div class="top-nav">
+                <div class="logo"></div>
+                <div class="nav-links">
+                    <a href="#" class="nav-link" id="course-link">
+                        <div class="nav-icon">
+                            <img src="/images/placeholder.png" width="32px">
+                        </div>
+                        <div class="nav-text">Course</div>
+                    </a>
+                    <a href="#" class="nav-link" id="create-link">
+                        <div class="nav-icon">
+                            <img src="/images/placeholder.png" width="32px">
+                        </div>
+                        <div class="nav-text">Create</div>
+                    </a>
+                </div>
+    
+            </div>
+            <div class="bottom-nav">
+                <div class="nav-links">
+                    <p>Hello, <%- user.username %>!</p>
+                    <a class="nav-link nav-flex <% if (user.stats.streakPaused) { %>streak-paused<% } %>"">
+                            <div class=" nav-icon">
+                        <img src="/images/streak.png" width="32px">
+                </div>
+                <div class="nav-text streak"><%- user.stats.streak %></div>
+                </a>
+                <!-- TODO: XP icon and text color -->
+                <a class="nav-link nav-flex">
+                    <div class="nav-icon">
+                        <img src="/images/placeholder.png" width="32px">
+                    </div>
+                    <div class="nav-text xp-text"><%- user.stats.xp %> XP</div>
+                </a>
+                <a class="nav-link nav-flex" href="/languages">
+                    <img src="/images/placeholder.png" width="32px" style="white-space: nowrap;">
+                    <span><%- user.currentLanguage %></span>
+                    <img src="/images/placeholder.png" width="32px">
+                </a>
+                <a class="nav-link" href="#" onclick="signOut()">
+                    <div class="nav-sign-out">Sign Out</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="content-wrapper">
+        <div style="position: fixed;">
+            <button id="toggle-nav">☰</button>
+        </div>
+        <div class="course-container">
+            <h1>Course</h1>
+            <div class="course-list">
+                <% language.course.forEach(function(lesson, index) { %>
+                    <div class="course-item-wrapper"
+                        style="box-shadow: 0px 0px 3px #ccc; border-radius: 10px; padding: 1em;">
+                        <% if (index !==0) { if (!user.completedLessons.includes(language.course[index - 1].lessonId)) { %>
+                            <div class="course-item-disabled-container" hidden>
+                                <div class="course-item-disabled">
+                                    <img src="/images/placeholder.png" width="64px">
+                                </div>
+                            </div>
+                            <% }} %>
+                                <div class="course-item-container">
+                                    <h3 style="margin:-8px 0;"> Lesson <%= index + 1 %>
+                                    </h3>
+                                    <h2>
+                                        <%= lesson.title %>
+                                    </h2>
+                                    <p style="margin: 0;">
+                                        <%= lesson.description %>
+                                    </p>
+                                    <% const isLocked=index !==0 && !user.completedLessons.includes(language.course[index -
+                                        1].lessonId); %>
+                                        <a href="/api/lesson/<%= index %>"
+                                            class="view-course-button <%= isLocked ? 'course-disabled' : '' %>">
+                                            <%= isLocked ? 'Lesson Locked' : 'Start Lesson' %>
+                                        </a>
+                                </div>
+                    </div>
+                    <% }); %>
+            </div>
+        </div>
+    
+        <div class="lesson-creation-container" hidden>
+            <h1>Let's create a lesson!</h1>
+            <form id="lesson-form" action="/api/generate" method="POST">
+                <input type="text" id="prompt" name="prompt" placeholder="Lesson topic" required><br>
+                <div class="submit-container">
+                    <button class="continue-button" type="submit">Create</button>
+                </div>
+            </form>
+            <!-- TODO: Add previously generated lessons -->
+        </div>
+    </div>
+    </div> 
+    
+    <div class="generating-wrapper" hidden>
+        <div class="generating-container">
+            <h1>Generating your lesson!</h1>
+            <div class="spinner-container">
+                <div class="spinner"></div>
+            </div>
+        </div>
+    </div>
+
+        
+
+    <!-- TODO: Add a generating spinner when generating a new lesson -->
+    
+    <!-- TODO: Add error handling -->
+
+    <script>
+        function signOut() {
+            fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = '/login';
+                } else {
+                    console.error('Logout failed');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // course and create tab switching, toggling visibility on click and highlighting the active link
+            const toggleVisibility = (showContainer, hideContainer, activeLink, inactiveLink) => {
+            showContainer.hidden = false;
+            hideContainer.hidden = true;
+            activeLink.classList.add('selected-nav-link');
+            inactiveLink.classList.remove('selected-nav-link');
+            };
+
+            const lessonCreationContainer = document.querySelector('.lesson-creation-container');
+            const courseContainer = document.querySelector('.course-container');
+            const lessonCreationLink = document.getElementById('create-link');
+            const courseLink = document.getElementById('course-link');
+
+            toggleVisibility(courseContainer, lessonCreationContainer, courseLink, lessonCreationLink);
+
+            lessonCreationLink.addEventListener('click', () => 
+            toggleVisibility(lessonCreationContainer, courseContainer, lessonCreationLink, courseLink)
+            );
+
+            courseLink.addEventListener('click', () => 
+            toggleVisibility(courseContainer, lessonCreationContainer, courseLink, lessonCreationLink)
+            );
+
+            // nav bar toggle
+            const toggleNavButton = document.getElementById('toggle-nav');
+            const navBar = document.getElementById('nav-bar');
+            const contentWrapper = document.querySelector('.content-wrapper');
+
+            toggleNavButton.addEventListener('click', () => {
+                navBar.classList.toggle('hidden');
+                contentWrapper.classList.toggle('expanded');
+            });
+
+            // if the screen is small, hide the nav bar
+            if (window.innerWidth < 768) {
+                navBar.classList.add('hidden');
+                contentWrapper.classList.add('expanded');
+            }
+        });
+
+        // loading spinner if button pressed 
+        const lessonForm = document.getElementById('lesson-form');
+        const generatingWrapper = document.querySelector('.generating-wrapper');
+
+        lessonForm.addEventListener('submit', function() {
+            generatingWrapper.hidden = false;
+        });
+
+        // if any a tag with class view-course-button is clicked, show the loading spinner
+        const viewCourseButtons = document.querySelectorAll('.view-course-button');
+        viewCourseButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                generatingWrapper.hidden = false;
+            });
+        });
+
+        
+
+    </script>
+</body>
+</html>
