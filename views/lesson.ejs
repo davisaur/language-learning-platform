@@ -14,53 +14,58 @@
     <audio id="correct-sound" src="/audio/duolingo_correct.wav" type="audio/wav" ></audio>
     <audio id="incorrect-sound" src="/audio/duolingo_wrong.wav" type="audio/wav"></audio>
     <audio id="complete-sound" src="/audio/duolingo_complete.wav" type="audio/wav"></audio>
+    <div class="lesson-wrapper">
+        <div class="lesson-container">
+        <div class="translation-container" hidden>
+            <h2>Translate the following sentence</h2>
+            <p id="originalText"></p>
+            <div id="translated-word-list"> </div>
+            <div id="source-word-list"></div>
+        </div>
 
-    <div class="translation-container" hidden>
-        <h2>Translate the following sentence</h2>
-        <p id="originalText"></p>
-        <div id="translated-word-list"> </div>
-        <div id="source-word-list"></div>
-    </div>
+        <div class="word-matching-container" hidden>
+            <h2>Match the words</h2>
+            <div class="matching-column-container">
+                <div class="left-matching-container">
 
-    <div class="word-matching-container" hidden>
-        <h2>Match the words</h2>
-        <div class="matching-column-container">
-            <div class="left-matching-container">
+                </div>
+                <div class="right-matching-container">
+
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="multiple-choice-container" hidden>
+            <div class="question-container">
+                <h2 class="matching-question-text"></h2>
+            </div>
+            <div class="multiple-choice-answers">
 
             </div>
-            <div class="right-matching-container">
-
-            </div>
-            
         </div>
-    </div>
 
-    <div class="multiple-choice-container" hidden>
-        <div class="question-container">
-            <h2 class="matching-question-text"></h2>
+        <div class="submit-container">
+            <button id="submit-button" class="continue-button" onclick="checkResult();" disabled>Submit</button>
         </div>
-        <div class="multiple-choice-answers">
-
         </div>
-    </div>
-
-    <div class="submit-container">
-        <button id="submit-button" class="continue-button" onclick="checkResult();" disabled>Submit</button>
     </div>
 
     <div class="overlay-result-container" hidden>
-        <div class="inner-result-container">
-            <div class="correct-result result" hidden>
-                <h1 class="result-text">Perfect!</h1>
-                <div class="continue-button-container">
-                    <button class="continue-button" onclick="nextQuestion();">Continue</button>
+        <div class="result-wrapper">
+            <div class="result-container">
+                <div class="correct-result result" hidden>
+                    <h1 class="result-text">Perfect!</h1>
+                    <div class="continue-button-container">
+                        <button class="continue-button" onclick="nextQuestion();">Continue</button>
+                    </div>
                 </div>
-            </div>
-            <div class="incorrect-result result" hidden="true">
-                <h1 class="result-text">Zoinks, Scoob!</h1>
-                <h3 class="expected-answer-title">Correct answer:</h3>
-                <p id="expected-answer">expectedAnswer</p>
-                <button class="continue-button incorrect-button" onclick="nextQuestion();">Continue</button>
+                <div class="incorrect-result result" hidden="true">
+                    <h1 class="result-text">Zoinks, Scoob!</h1>
+                    <h3 class="expected-answer-title">Correct answer:</h3>
+                    <p id="expected-answer">expectedAnswer</p>
+                    <button class="continue-button incorrect-button" onclick="nextQuestion();">Continue</button>
+                </div>
             </div>
         </div>
     </div>

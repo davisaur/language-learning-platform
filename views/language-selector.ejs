@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Language Learning Platform</title>
     <link rel="stylesheet" href="/styles/style.css">
-    <link rel="stylesheet" href="/styles/home.css">
+    <link rel="stylesheet" href="/styles/language-selector.css">
     <style>
         body {
             text-align: center;
@@ -18,13 +18,14 @@
             <h1>Select a Language</h1>
             <form id="language-form" action="/api/language" method="POST">
                 <select id="language-select" name="language">
-                    <% languages.forEach(function(language) { %>
+                    <% languages.forEach(function(language) { if(!language.custom) { %>
                         <option value="<%= language.language %>"><%= language.language %></option>
-                    <% }); %>
+                    <% }}); %>
                     <!-- TODO: Include users language -->
                       <option value="other">Other</option>
                 </select>
                 <input type="text" id="otherLanguage" name="otherLanguage" placeholder="Type the language you want to learn" style="display: none;">
+                <p class="experimental" hidden>Beware: this feature is very experimental</p>
                 <div class="submit-container">
                     <button class="continue-button" type="submit">Select</button>
                 </div>
@@ -39,11 +40,14 @@
         languageSelect.addEventListener('change', function() {
             if (this.value === 'other') {
                 otherLanguageInput.style.display = 'block';
+                document.querySelector('.experimental').hidden = false;
                 isOtherLanguageEmpty();
                 
             } else {
                 otherLanguageInput.style.display = 'none';
                 document.querySelector('.continue-button').disabled = false;
+                document.querySelector('.experimental').hidden = true;
+
             }
         
         });

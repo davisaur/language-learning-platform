@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+}
+
+.language-selector-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    vertical-align: middle;
+    height: 100vh;
+}
+
+.language-selector-container {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 2em;
+}
+
+select {
+    padding: 0.5em;
+    border-radius: 8px;
+    border: 2px solid var(--button-color);
+    font-size: 1em;
+    margin-top: 1em;
+    box-shadow: var(--button-color) 0 3px 0 ;
+    width: 100%;
+    font-family: inherit;
+    font-weight: 600;
+    color: var(--button-text-color);
+}
+
+input[type="text"] {
+    margin: 0.5em -0.5em;
+    width: calc(100% - 1em);
+    padding: 0 0.5em;
+    transform: translateX(0.5em);
+}
+
+.experimental {
+    font-style: italic;
+}

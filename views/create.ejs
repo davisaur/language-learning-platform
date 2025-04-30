@@ -36,7 +36,7 @@
             <div class="bottom-nav">
                 <div class="nav-links">
                     <p>Hello, <%- user.username %>!</p>
-                    <a class="nav-link nav-flex">
+                    <a class="nav-link nav-flex <% if (user.stats.streakPaused) { %>streak-paused<% } %>"">
                         <div class="nav-icon">
                             <img src="/images/streak.png" width="32px">
                         </div>
@@ -128,6 +128,7 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // course and create tab switching, toggling visibility on click and highlighting the active link
             const toggleVisibility = (showContainer, hideContainer, activeLink, inactiveLink) => {
             showContainer.hidden = false;
             hideContainer.hidden = true;
@@ -150,6 +151,7 @@
             toggleVisibility(courseContainer, lessonCreationContainer, courseLink, lessonCreationLink)
             );
 
+            // nav bar toggle
             const toggleNavButton = document.getElementById('toggle-nav');
             const navBar = document.getElementById('nav-bar');
             const contentWrapper = document.querySelector('.content-wrapper');

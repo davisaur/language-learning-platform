@@ -1,4 +1,28 @@
+body {
+    width: 100%;
+}
 
+.lesson-wrapper {
+    height: 100%;
+    width: calc(100% - 2em);
+    margin: 1em;
+}
+
+.lesson-container {
+    max-width: 700px;
+    margin: auto;
+}
+
+.submit-container {
+    position: absolute;
+    width: calc(100% - 2em);
+    max-width: 700px;
+    text-align: center;
+}
+
+.continue-button {
+    width: 100%;
+}
 
 /* Progress Bar */
 
@@ -16,6 +40,7 @@
     background-color: #7fc776;
     border-radius: 5px;
 }
+
 
 
 
@@ -52,18 +77,23 @@
     animation: fade-in 0.25s cubic-bezier(0,0,0,1);
 }
 
-.inner-result-container {
+.result-wrapper {
     width: 100%;
     position: fixed;
     bottom: 0;
+    background-color: #eee;
     box-shadow: #ccc 0px 0px 24px;
     animation: pop-in-from-bottom 0.25s cubic-bezier(0,0,0,1);
+}
+
+.result-container {
+    max-width: 700px;
+    margin: auto;
 }
 
 .result {
     height: 100%;
     padding: 10px;
-    background-color: #eee;
 }
 
 .result-text {
@@ -97,12 +127,15 @@
 /* Translation Activity Styles */
 
 #translated-word-list {
-    width: 100%;   
-    height: 3em;
-    padding-top: 3px;
-    padding-bottom: 3px;
+    width: 100%;
+    min-height: 3em; /* Minimum height */
+    padding: 0.5em;
     border-bottom: #ccc solid 2px;
     border-top: #ccc solid 2px;
+    display: flex;
+    flex-wrap: wrap; /* Allow words to wrap onto multiple lines */
+    align-items: center; /* Center items vertically */
+    justify-content: flex-start; /* Align items to the left */
 }
 
 #source-word-list {

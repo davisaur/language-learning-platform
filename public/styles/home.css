@@ -86,6 +86,10 @@
     color: #FF6F00;
 }
 
+.streak-paused {
+    filter: grayscale(100%);
+}
+
 .course-item-wrapper {
     position: relative; /* Establish positioning context */
     box-shadow: 0px 0px 3px #ccc;

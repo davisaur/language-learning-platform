@@ -175,9 +175,12 @@ router.post('/complete', async (req, res) => {
             const lastLessonDate = new Date(user.stats.lastLessonDate);
             if (lastLessonDate.getDate() !== today.getDate()) {
                 user.stats.streak += 1;
+                user.stats.streakPaused = false;
             }
         } else {
             user.stats.streak += 1;
+            user.stats.streakPaused = false;
+
         }
         user.stats.lastLessonDate = today;
         await user.save();
