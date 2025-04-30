@@ -25,10 +25,14 @@
 
 }
 
-.lesson-creation-container, .course-container {
+.content-wrapper {
     margin-left: 300px;
     width: 100%;
+}
 
+.lesson-creation-container, .course-container {
+    max-width: 1000px;
+    margin: auto;
 }
 
 .bottom-nav {
