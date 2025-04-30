@@ -337,10 +337,12 @@
                     completeSound.currentTime = 0; // Reset sound to start
                     completeSound.volume = 0.5; // Set volume to 50%
                     completeSound.play();
+                    setTimeout(() => {
+                        alert("Lesson Complete!");  
+                        window.location.href = "/";
 
-                    alert("Lesson Complete!");  
+                    }, 100);
                     // TODO: send user to completion screen and POST lesson completion
-                    window.location.href = "/";
                 }
             }
             console.log("Current question index: ", currentQuestionIndex);
