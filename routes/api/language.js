@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
 const Language = require('../../models/language');
-const User = require('../../models/User');
+const User = require('../../models/user');
 const Lesson = require('../../models/lesson');
 const aiService = require('../../utils/aiService');
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Language = require('../models/language');
-const User = require('../models/User');
+const User = require('../models/user');
 
 // Check if the user session exists
 const checkUserSession = (req, res, next) => {

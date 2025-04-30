@@ -3,7 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
-const User = require('../../models/User');
+const User = require('../../models/user');
 const saltRounds = 10;
 
 // Login Route
