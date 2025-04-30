@@ -65,11 +65,18 @@
             <h1>Course</h1>
             <div class="course-list">
                 <% language.course.forEach(function(lesson, index) { %>
-                    <div class="course-item" style="box-shadow: 0px 0px 3px #ccc; border-radius: 10px; margin: 2em;">
-                        <h3>Lesson <%= index + 1 %></h3>
-                        <h2><%= lesson.title %></h2>
-                        <p><%= lesson.description %></p>
-                        <a href="/api/lesson/<%= index %>" class="view-course-button button">View Course</a>
+                    <div class="course-item-wrapper" style="box-shadow: 0px 0px 3px #ccc; border-radius: 10px; margin: 2em;">
+                        <div class="course-item-disabled-container">
+                            <div class="course-item-disabled">
+                                <img src="/images/placeholder.png" width="32px">
+                            </div>
+                        </div>
+                        <div class="course-item-container">
+                            <h3>Lesson <%= index + 1 %></h3>
+                            <h2><%= lesson.title %></h2>
+                            <p><%= lesson.description %></p>
+                            <a href="/api/lesson/<%= index %>" class="view-course-button button">View Course</a>
+                        </div>
                     </div>
                 <% }); %>
             </div>
@@ -77,14 +84,19 @@
 
         <div class="lesson-creation-container" hidden>
             <h1>Let's create a lesson!</h1>
-            <form id="lesson-form" action="/lesson" method="POST">
+            <form id="lesson-form" action="/api/generate" method="POST">
                 <input type="text" id="prompt" name="prompt" placeholder="Lesson topic" required><br>
                 <div class="submit-container">
                     <button class="continue-button" type="submit">Create</button>
                 </div>
             </form>
+            // TODO: Add previously generated lessons
         </div>
     </div>
+
+    // TODO: Add a generating spinner when generating a new lesson
+    
+    // TODO: Add error handling
 
     <script>
         function signOut() {

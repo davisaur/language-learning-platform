@@ -81,8 +81,37 @@ router.post('/language', async (req, res) => {
 });
 
 router.post('/generate', async (req, res) => {
+    const { prompt } = req.body;
+    if (!prompt) {
+        return res.status(400).json({ message: 'Prompt is required' });
+    }
 
-    
+    generateLesson(prompt, req.session.user.currentLanguage)
+        .then(async (lesson) => {
+            // Remove backticks and "json" from the response
+            lesson = lesson.replace(/`/g, '').replace(/json/g, '');
+            lesson = JSON.parse(lesson);
+            // Save the lesson to the database
+            const newLesson = new Lesson({
+                language: req.session.user.currentLanguage,
+                content: lesson.questions
+            });
+            await newLesson.save();
+            // Update the user customLessons object array with the lesson         
+            const user = await User.findOne({ username: req.session.user.username });
+            if (user) {
+                user.customLessons.push({ lessonId: newLesson._id, title: prompt });
+                await user.save();
+                req.session.user = user; 
+                res.redirect(`/lesson/${newLesson._id}`);
+            } else {
+                return res.status(400).json({ message: 'User not found' });
+            }
+        })
+        .catch(err => {
+            console.error('Error generating lesson:', err);
+            res.status(500).json({ error: 'Failed to generate lesson' });
+        });
 });
 
 router.get('/lesson/:index', async (req, res) => {
