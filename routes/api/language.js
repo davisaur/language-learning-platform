@@ -154,4 +154,38 @@ router.get('/lesson/:index', async (req, res) => {
     }
 });
 
+router.post('/complete', async (req, res) => {
+    const { lessonId } = req.body;
+    if (!lessonId) {
+        return res.status(400).json({ message: 'Lesson ID is required' });
+    }
+    // Add lessonId to the user's completedLessons array
+    const user = await User.findOne({ username: req.session.user.username });
+    const lesson = await Lesson.findById(lessonId);
+    if (user) {
+
+        if(!user.completedLessons.includes(lessonId)) {
+            user.completedLessons.push(lessonId);
+        }
+
+        user.stats.xp += lesson.content.length * 2;
+        // if users last lesson wasn't today, increase streak
+        const today = new Date();
+        if (user.stats.lastLessonDate) {
+            const lastLessonDate = new Date(user.stats.lastLessonDate);
+            if (lastLessonDate.getDate() !== today.getDate()) {
+                user.stats.streak += 1;
+            }
+        } else {
+            user.stats.streak += 1;
+        }
+        user.stats.lastLessonDate = today;
+        await user.save();
+        req.session.user = user; 
+    } else {
+        return res.status(400).json({ message: 'User not found' });
+    }
+    res.redirect('/');
+});
+
 module.exports = router;

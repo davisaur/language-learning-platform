@@ -339,10 +339,25 @@
                     completeSound.play();
                     setTimeout(() => {
                         alert("Lesson Complete!");  
-                        window.location.href = "/";
-
+                        fetch('/api/complete', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ lessonId: <%- JSON.stringify(lesson._id) %> }),
+                        })
+                        .then(response => {
+                            if (response.redirected) {
+                                window.location.href = response.url;
+                            } else {
+                                console.error('Error completing lesson:', response.statusText);
+                                alert('An error occurred while completing the lesson. Please try again.');
+                            }});
                     }, 100);
                     // TODO: send user to completion screen and POST lesson completion
+
+                    // send post request to /api/complete with lessonId
+                    
                 }
             }
             console.log("Current question index: ", currentQuestionIndex);

@@ -15,14 +15,10 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     },
     stats: {
-        type: [
-            {
-                streak: { type: Number, default: 0 },
-                xp: { type: Number, default: 0 },
-                streakStart: { type: Date, default: null },
-                lastLessonDate: { type: Date, default: null }
-            }
-        ]
+        streak: { type: Number, default: 0 },
+        xp: { type: Number, default: 0 },
+        streakStart: { type: Date, default: null },
+        lastLessonDate: { type: Date, default: null }
     },
     completedLessons: {
         type: [String],

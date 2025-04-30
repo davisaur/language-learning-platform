@@ -40,14 +40,14 @@
                         <div class="nav-icon">
                             <img src="/images/streak.png" width="32px">
                         </div>
-                        <div class="nav-text streak">365</div>
+                        <div class="nav-text streak"><%- user.stats.streak %></div>
                     </a>
                     <!-- TODO: XP icon and text color -->
                     <a class="nav-link nav-flex">
                         <div class="nav-icon">
                             <img src="/images/placeholder.png" width="32px">
                         </div>
-                        <div class="nav-text xp-text">0 XP</div>
+                        <div class="nav-text xp-text"><%- user.stats.xp %> XP</div>
                     </a>
                     <a class="nav-link nav-flex" href="/languages">
                         <img src="/images/placeholder.png" width="32px" style="white-space: nowrap;">
@@ -65,17 +65,22 @@
             <h1>Course</h1>
             <div class="course-list">
                 <% language.course.forEach(function(lesson, index) { %>
-                    <div class="course-item-wrapper" style="box-shadow: 0px 0px 3px #ccc; border-radius: 10px; margin: 2em;">
-                        <div class="course-item-disabled-container">
-                            <div class="course-item-disabled">
-                                <img src="/images/placeholder.png" width="32px">
+                    <div class="course-item-wrapper" style="box-shadow: 0px 0px 3px #ccc; border-radius: 10px; padding: 1em;">
+                        <% if (index !== 0) { if (!user.completedLessons.includes(language.course[index - 1].lessonId)) { %>
+                            <div class="course-item-disabled-container" hidden>
+                                <div class="course-item-disabled">
+                                    <img src="/images/placeholder.png" width="32px">
+                                </div>
                             </div>
-                        </div>
-                        <div class="course-item-container">
-                            <h3>Lesson <%= index + 1 %></h3>
+                        <% }} %>
+                        <div class="course-item-container" >
+                            <h3 style="margin:-8px 0;"> Lesson <%= index + 1 %></h3>
                             <h2><%= lesson.title %></h2>
-                            <p><%= lesson.description %></p>
-                            <a href="/api/lesson/<%= index %>" class="view-course-button button">View Course</a>
+                            <p style="margin: 0;"><%= lesson.description %></p>
+                            <% const isLocked = index !== 0 && !user.completedLessons.includes(language.course[index - 1].lessonId); %>
+                            <a href="/api/lesson/<%= index %>" class="view-course-button <%= isLocked ? 'course-disabled' : '' %>">
+                                <%= isLocked ? 'Lesson Locked' : 'View Course' %>
+                            </a>
                         </div>
                     </div>
                 <% }); %>
