@@ -19,7 +19,8 @@ const lessonPrompt = fs.readFileSync(lessonPromptPath, 'utf8');
 
 // Function to generate a lesson
 async function generateLesson(userPrompt, language) {
-    const prompt = lessonPrompt.replace('[[LESSON_LANGUAGE]]', language).replace('[[LESSON_PROMPT]]', userPrompt);
+    const prompt = lessonPrompt.replace('[[LESSON_LANGUAGE]]', language).replace('[[LESSON_LANGUAGE]]', language).replace('[[LESSON_PROMPT]]', userPrompt);
+    console.log(prompt);
     const response = await aiService.generateResponse(prompt);
     return response;
 }

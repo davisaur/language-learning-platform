@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
 
-    <title>Multiple Questions</title>
+    <title>Language Learning Platform - Questions</title>
     <link rel="stylesheet" href="/styles/style.css">
     <link rel="stylesheet" href="/styles/lesson.css">
  </head>
@@ -12,9 +12,6 @@
     <div class="progress-bar-container">
         <div class="progress-bar"> </div>
     </div>
-    <audio id="correct-sound" src="/audio/duolingo_correct.wav" type="audio/wav" ></audio>
-    <audio id="incorrect-sound" src="/audio/duolingo_wrong.wav" type="audio/wav"></audio>
-    <audio id="complete-sound" src="/audio/duolingo_complete.wav" type="audio/wav"></audio>
     <div class="lesson-wrapper">
         <div class="lesson-container">
         <div class="translation-container" hidden>
@@ -87,13 +84,16 @@
 
         // Multiple Choice Variables
         const submitButton = document.getElementById('submit-button');
-        const questions = <%- JSON.stringify(lesson.content) %>;
 
+        // Import Questions
+        const questions = <%- JSON.stringify(questions) %>;
+
+        // Upon loading the page, process the questions
         document.addEventListener('DOMContentLoaded', () => {
+            // Add all questions to the questionsIndex array
             for (let i = 0; i < questions.length; i++) {
                 questionsIndex.push(i);
             }
-
             currentQuestion = questions[questionsIndex[currentQuestionIndex]];
             processQuestion();
         });        
@@ -106,24 +106,25 @@
 
                 const expectedResult = currentQuestion.question.translatedText
                     .replace(/[\p{P}\p{S}]/gu, '') // Remove punctuation and symbols, including those from other languages
-                    .split(' ')
-                    .map(word => word.toLowerCase());
+                    .split(' ') // Split by spaces
+                    .map(word => word.toLowerCase()); // Convert each word to lowercase
 
-                let scrambledWordList = [...expectedResult];
+                let scrambledWordList = [...expectedResult]; // Create a copy of the expected result
 
-                if(currentQuestion.question.extraWords) {
-                    scrambledWordList.push(...currentQuestion.question.extraWords.map(word => word.toLowerCase()));
+                if(currentQuestion.question.extraWords) { // Check if there are extra words
+                    scrambledWordList.push(...currentQuestion.question.extraWords.map(word => word.toLowerCase())); // Add extra words to the list
                 }
 
-                scrambledWordList = scrambledWordList.sort(() => Math.random() - 0.5);
+                scrambledWordList = scrambledWordList.sort(() => Math.random() - 0.5); // Shuffle the list
 
+                // Create buttons for each word in the scrambled list
                 for (const word of scrambledWordList) {
                     const button = document.createElement('button');
                     button.className = 'button';
                     button.textContent = word;
                     button.dataset.word = word.toLowerCase();
                     button.onclick = function () {
-                    addToTranslation(button);
+                        addToTranslation(button);
                     };
                     sourceWordList.appendChild(button);
                 }
@@ -131,9 +132,10 @@
                 document.querySelector(".word-matching-container").hidden = false;
                 const leftMatchingContainer = document.querySelector(".left-matching-container");
                 const rightMatchingContainer = document.querySelector(".right-matching-container");
-
+                 
                 const pairs = currentQuestion.question.pairs;
 
+                // Goes through each pair and creates buttons
                 pairs.forEach((pair, index) => {
                     const sourceButton = document.createElement("button");
                     sourceButton.className = "matching-button";
@@ -154,11 +156,13 @@
                     pairsCount++;
                 });
 
-                // Randomize buttons
+                // Take all the buttons on the left and right buttons
                 const leftButtons = Array.from(leftMatchingContainer.children);
                 const rightButtons = Array.from(rightMatchingContainer.children);
+                // Shuffle the buttons
                 leftButtons.sort(() => Math.random() - 0.5);
                 rightButtons.sort(() => Math.random() - 0.5);
+                // Add them back to the containers
                 leftButtons.forEach(button => leftMatchingContainer.appendChild(button));
                 rightButtons.forEach(button => rightMatchingContainer.appendChild(button));
 
@@ -229,32 +233,43 @@
         }
 
         function selectMatchingWord(btn) {
+            // If  there's no selected button 
+            // or that the selected button IS the same type as the current button
             if(!selectedButton || selectedButton.dataset.type === btn.dataset.type) {
                 if(selectedButton !== null) {
+                    // enable previous selected button
                     selectedButton.disabled = false;
                     selectedButton.classList.remove("selected-button");
                 }
+                // adds the button to a global selected variable
                 selectedButton = btn;
                 
-                // disable button
+                // makes the button selected (makes it blue)
                 btn.classList.add("selected-button");
 
             } else {
+                // If the previously selected button is from the same pair as current button
                 if(selectedButton.dataset.pair === btn.dataset.pair) {
                     selectedButton.classList.remove("selected-button");
                     
+                    // Add correct class (colours them green) to both buttons
                     const correctButtons = [selectedButton, btn];
                     correctButtons[0].classList.add("correct-answer");
                     correctButtons[1].classList.add("correct-answer");
+                    // And then remove it a second later (animation)
                     setTimeout(() => {
                         correctButtons[0].classList.remove("correct-answer");
                         correctButtons[1].classList.remove("correct-answer");
                     }, 1000);
 
+                    // Disable both buttons
                     btn.disabled = true;
                     selectedButton.disabled = true;
+
+                    //Decrease pairs count until it reaches 0
                     pairsCount--;
                     if(pairsCount === 0) {
+                        // and show the result
                         showResult(true);
                     }
                 } else {
@@ -339,10 +354,8 @@
                     document.querySelector('.overlay-result-container').hidden = true;
                     
                     // Play complete sound
-                    const completeSound = document.getElementById('complete-sound');
-                    completeSound.currentTime = 0; // Reset sound to start
-                    completeSound.volume = 0.5; // Set volume to 50%
-                    completeSound.play();
+                    playSound('complete-sound');
+
                     setTimeout(() => {
                         alert("Lesson Complete!");  
                         fetch('/api/complete', {
