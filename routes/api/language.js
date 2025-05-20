@@ -110,6 +110,11 @@ router.post('/generate', async (req, res) => {
                 user.customLessons.push({ lessonId: newLesson._id, title: prompt });
                 await user.save();
                 req.session.user = user;
+                req.session.save(err => {
+                    if (err) {
+                        console.error('Error saving session:', err);
+                    }
+                });
 
                 // Redirect to the newly created lesson
                 res.redirect(`/lesson/${newLesson._id}`);
@@ -207,19 +212,23 @@ router.post('/complete', async (req, res) => {
         user.stats.xp += lesson.content.length * 2;
         // if users last lesson wasn't today, increase streak
         const today = new Date();
-        if (user.stats.lastLessonDate) {
-            const lastLessonDate = new Date(user.stats.lastLessonDate);
-            if (lastLessonDate.getDate() !== today.getDate()) {
-                user.stats.streak += 1;
-                user.stats.streakPaused = false;
-            }
-        } else {
+
+        console.log(new Date(user.stats.lastLessonDate).toDateString());
+        console.log(today.toDateString());
+
+        if(!user.stats.lastLessonDate) { console.log("lastLessonDate doesn't exist.")} else { console.log("lastLessonDate exists")};
+        if(new Date(user.stats.lastLessonDate).toDateString() !== today.toDateString()) { console.log("lastLessonDate doesn't matches today.")} else { console.log("lastLessonDate matches today")};
+
+
+        if (!user.stats.lastLessonDate || new Date(user.stats.lastLessonDate).toDateString() !== today.toDateString()) {
             user.stats.streak += 1;
             user.stats.streakPaused = false;
-
         }
         user.stats.lastLessonDate = today;
         await user.save();
+
+        console.log('user stats saved. streak: ' + user.stats.streak +  ', last lesson: ' + user.stats.lastLessonDate);
+
         req.session.user = user; 
     } else {
         return res.status(400).json({ message: 'User not found' });

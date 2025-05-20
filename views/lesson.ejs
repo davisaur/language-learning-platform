@@ -86,7 +86,7 @@
         const submitButton = document.getElementById('submit-button');
 
         // Import Questions
-        const questions = <%- JSON.stringify(questions) %>;
+        const questions = <%- JSON.stringify(lesson.content) %>;
 
         // Upon loading the page, process the questions
         document.addEventListener('DOMContentLoaded', () => {
@@ -412,11 +412,13 @@
         }
 
         function playSound(sound) {
-            const audio = document.getElementById(sound);
-            audio.currentTime = 0; // Reset sound to start
-            audio.volume = 0.5; // Set volume to 50%
-            audio.play();
+            // const audio = document.getElementById(sound);
+            // audio.currentTime = 0; // Reset sound to start
+            // audio.volume = 0.5; // Set volume to 50%
+            // audio.play();
         }
     </script>
+    <!-- Audio elements for sound effects -->
+
 </body>
 </html>
